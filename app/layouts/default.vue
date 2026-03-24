@@ -55,7 +55,7 @@ const logout = async () => {
             </NuxtLink>
           </nav>
 
-          <template v-if="user?.role === 'admin'">
+          <template v-if="user?.role === 'admin' || user?.role === 'superadmin'">
             <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-8 mb-4">Settings</p>
             <nav class="space-y-1.5">
               <NuxtLink to="/admin/users" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-brand-primary transition-colors" active-class="bg-brand-primary/5 text-brand-primary font-bold">

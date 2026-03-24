@@ -4,7 +4,8 @@ import { users } from '../../database/schema';
 export default defineEventHandler(async (event) => {
   const { user } = await requireUserSession(event);
   
-  if (user.role !== 'admin') {
+  const adminUser = user as any;
+  if (!['admin', 'superadmin'].includes(adminUser.role)) {
     throw createError({
       statusCode: 403,
       message: 'Forbidden: Admin access required',
