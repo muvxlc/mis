@@ -1,0 +1,47 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+@theme {
+  /* Sophisticated Color Palette */
+  --color-brand-primary: #061e26; /* Deep Teal/Charcoal */
+  --color-brand-accent: #eab308;  /* Yellow-Gold */
+  --color-brand-bg: #f8fafc;      /* Soft White/Slate-50 */
+  
+  /* Typography */
+  --font-serif: "Playfair Display", "Times New Roman", serif;
+  --font-sans: "Geist", "Inter", sans-serif;
+}
+
+/* Base Styles */
+@layer base {
+  body {
+    @apply font-sans bg-brand-bg text-brand-primary;
+  }
+  
+  h1, h2, h3, .font-serif {
+    @apply font-serif;
+  }
+}
+
+/* Nuxt UI v4 Customization via CSS Variables */
+:root {
+  --ui-primary: var(--color-brand-accent);
+  --ui-bg: white;
+}
+
+/* Mac-style Window Mockup */
+.mac-window {
+  @apply rounded-xl shadow-2xl overflow-hidden border border-slate-200 bg-white;
+}
+
+.mac-title-bar {
+  @apply bg-brand-primary py-3 px-4 flex items-center gap-2;
+}
+
+.mac-dot {
+  @apply w-3 h-3 rounded-full;
+}
+
+.mac-dot-red { @apply bg-[#ff5f56]; }
+.mac-dot-yellow { @apply bg-[#ffbd2e]; }
+.mac-dot-green { @apply bg-[#27c93f]; }
