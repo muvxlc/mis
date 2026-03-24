@@ -4,17 +4,22 @@ import bcrypt from 'bcryptjs';
 const createUserSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8),
-  role: z.enum(['admin', 'user']),
+  role: z.enum(['superadmin', 'admin', 'user']),
 });
 
 export default defineEventHandler(async (event) => {
-  const { user: adminUser } = await requireUserSession(event);
-  if (adminUser.role !== 'admin') {
+  const session = await requireUserSession(event);
+  const adminUser = session.user as any;
+  if (!['admin', 'superadmin'].includes(adminUser.role)) {
     throw createError({ statusCode: 403, message: 'Forbidden' });
   }
 
   const body = await readBody(event);
   const { email, password, role } = createUserSchema.parse(body);
+
+  if (adminUser.role === 'admin' && role === 'superadmin') {
+    throw createError({ statusCode: 403, message: 'Admin cannot create a superadmin' });
+  }
 
   const db = useDrizzle();
   

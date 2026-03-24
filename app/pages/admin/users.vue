@@ -14,8 +14,37 @@ const form = reactive({
   id: 0,
   email: '',
   password: '',
-  role: 'user' as 'admin' | 'user'
+  role: 'user' as 'superadmin' | 'admin' | 'user'
 });
+
+const { user: currentUserSession } = useUserSession() as any;
+
+const availableRoles = computed(() => {
+  const roles = [
+    { label: 'Administrator', value: 'admin' },
+    { label: 'Standard User', value: 'user' }
+  ];
+  if (currentUserSession.value?.role === 'superadmin') {
+    roles.unshift({ label: 'Super Administrator', value: 'superadmin' });
+  }
+  return roles;
+});
+
+const canDelete = (targetUser: any) => {
+  const current = currentUserSession.value;
+  if (!current) return false;
+  if (current.role === 'admin') return targetUser.role === 'user';
+  if (current.role === 'superadmin') return targetUser.id !== current.id;
+  return false;
+};
+
+const canEdit = (targetUser: any) => {
+  const current = currentUserSession.value;
+  if (!current) return false;
+  if (current.role === 'superadmin') return true;
+  if (current.role === 'admin') return targetUser.role !== 'superadmin';
+  return false;
+};
 
 // ฟังก์ชันดึงข้อมูลแบบเน้นความชัวร์
 const loadData = async () => {
@@ -51,7 +80,11 @@ const onSubmit = async () => {
     if (isEditing.value) {
       await $fetch(`/api/admin/users/${form.id}`, {
         method: 'PATCH',
-        body: { email: form.email, role: form.role }
+        body: { 
+          email: form.email, 
+          role: form.role, 
+          ...(form.password ? { password: form.password } : {}) 
+        }
       });
       toast.add({ title: 'Success', description: 'Updated successfully' });
     } else {
@@ -76,6 +109,7 @@ const onEdit = (user: any) => {
   form.id = user.id;
   form.email = user.email;
   form.role = user.role;
+  form.password = ''; // Clear for optional reset password
 };
 
 const onDelete = async (userId: number) => {
@@ -148,7 +182,7 @@ const onDelete = async (userId: number) => {
                   </td>
                   <td class="px-6 py-4">
                     <UBadge 
-                      :color="user.role === 'admin' ? 'primary' : 'neutral'" 
+                      :color="user.role === 'superadmin' ? 'error' : (user.role === 'admin' ? 'primary' : 'neutral')" 
                       variant="soft" 
                       class="uppercase text-[9px] font-black px-2 py-0.5"
                     >
@@ -157,8 +191,8 @@ const onDelete = async (userId: number) => {
                   </td>
                   <td class="px-6 py-4">
                     <div class="flex gap-2">
-                      <UButton icon="i-heroicons-pencil-square" variant="ghost" color="neutral" size="sm" @click="onEdit(user)" />
-                      <UButton v-if="user.role !== 'admin'" icon="i-heroicons-trash" variant="ghost" color="error" size="sm" @click="onDelete(user.id)" />
+                       <UButton v-if="canEdit(user)" icon="i-heroicons-pencil-square" variant="ghost" color="neutral" size="sm" @click="onEdit(user)" />
+                      <UButton v-if="canDelete(user)" icon="i-heroicons-trash" variant="ghost" color="error" size="sm" @click="onDelete(user.id)" />
                     </div>
                   </td>
                 </tr>
@@ -191,15 +225,19 @@ const onDelete = async (userId: number) => {
                 <UInput v-model="form.email" placeholder="name@company.com" size="lg" class="w-full bg-slate-50" />
               </UFormField>
               
-              <UFormField v-if="!isEditing" label="Access Key (Password)">
+              <UFormField :label="isEditing ? 'Reset Access Key (Optional)' : 'Access Key (Password)'">
                 <UInput v-model="form.password" type="password" placeholder="••••••••" size="lg" class="w-full bg-slate-50" />
               </UFormField>
               
               <UFormField label="System Privilege">
-                <URadioGroup 
+                <select 
                   v-model="form.role" 
-                  :options="[{ label: 'Administrator', value: 'admin' }, { label: 'Standard User', value: 'user' }]" 
-                />
+                  class="w-full bg-slate-50 border border-slate-200 text-slate-700 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary transition-all shadow-sm"
+                >
+                  <option v-for="r in availableRoles" :key="r.value" :value="r.value">
+                    {{ r.label }}
+                  </option>
+                </select>
               </UFormField>
 
               <div class="pt-6">
