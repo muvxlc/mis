@@ -2,9 +2,13 @@ import { mysqlTable, serial, varchar, text, timestamp, bigint, json } from 'driz
 
 export const users = mysqlTable('users', {
   id: serial('id').primaryKey(),
-  email: varchar('email', { length: 255 }).notNull().unique(),
-  passwordHash: text('password_hash').notNull(),
-  role: varchar('role', { length: 20 }).notNull().default('user'), // 'admin' | 'user'
+  cid: varchar('cid', { length: 13 }).unique(),
+  name: varchar('name', { length: 255 }),
+  nameEn: varchar('name_en', { length: 255 }),
+  birthdate: varchar('birthdate', { length: 20 }),
+  email: varchar('email', { length: 255 }).unique(),
+  passwordHash: text('password_hash'),
+  role: varchar('role', { length: 20 }).notNull().default('user'), // 'superadmin' | 'admin' | 'user'
   createdAt: timestamp('created_at').defaultNow().notNull()
 });
 

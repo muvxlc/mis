@@ -2,21 +2,21 @@ import { z } from 'zod';
 import bcrypt from 'bcryptjs';
 
 const loginSchema = z.object({
-  email: z.string().email(),
+  identifier: z.string(),
   password: z.string(),
 });
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
-  const { email, password } = loginSchema.parse(body);
+  const { identifier, password } = loginSchema.parse(body);
 
   const db = useDrizzle();
   
   const user = await db.query.users.findFirst({
-    where: (users, { eq }) => eq(users.email, email),
+    where: (users, { eq, or }) => or(eq(users.email, identifier), eq(users.cid, identifier)),
   });
 
-  if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
+  if (!user || !user.passwordHash || !(await bcrypt.compare(password, user.passwordHash))) {
     throw createError({
       statusCode: 401,
       message: 'Invalid credentials',
@@ -28,6 +28,7 @@ export default defineEventHandler(async (event) => {
     user: {
       id: user.id,
       email: user.email,
+      name: user.nameEn || user.name || user.email,
       role: user.role,
     },
   });
@@ -36,6 +37,7 @@ export default defineEventHandler(async (event) => {
     user: {
       id: user.id,
       email: user.email,
+      name: user.nameEn || user.name || user.email,
       role: user.role,
     },
   };

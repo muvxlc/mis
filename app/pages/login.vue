@@ -7,7 +7,7 @@ const { fetch: fetchSession } = useUserSession();
 const toast = useToast();
 
 const state = reactive({
-  email: '',
+  identifier: '',
   password: ''
 });
 
@@ -48,11 +48,11 @@ const onLogin = async () => {
           </div>
 
           <UForm :state="state" class="space-y-6" @submit="onLogin">
-            <UFormField label="Email Address" name="email" class="font-sans">
+            <UFormField label="Email Address or Citizen ID" name="identifier" class="font-sans">
               <UInput 
-                v-model="state.email" 
-                placeholder="name@company.com" 
-                icon="i-heroicons-envelope"
+                v-model="state.identifier" 
+                placeholder="name@company.com or 1100..." 
+                icon="i-heroicons-user"
                 size="lg"
                 class="w-full"
                 :ui="{ 
@@ -86,6 +86,24 @@ const onLogin = async () => {
                 class="bg-brand-primary text-white hover:bg-slate-800 font-bold py-3 rounded-lg shadow-md transition-all active:scale-[0.98]"
               >
                 Sign In to MIS
+              </UButton>
+            </div>
+
+            <div class="relative flex items-center justify-center pt-2">
+              <div class="w-full h-px bg-slate-200"></div>
+              <span class="absolute bg-white px-3 text-[10px] text-slate-400 font-bold tracking-widest uppercase">OR CONTINUE WITH</span>
+            </div>
+
+            <div>
+              <UButton 
+                to="/api/auth/thaid"
+                external
+                block 
+                size="lg"
+                icon="i-heroicons-finger-print"
+                class="bg-[#1c3c6d] text-white hover:bg-[#122b54] font-bold py-3 rounded-lg shadow-md transition-all active:scale-[0.98]"
+              >
+                Login with ThaiD
               </UButton>
             </div>
 

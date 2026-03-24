@@ -27,8 +27,8 @@ const logout = async () => {
         </nav>
         <div v-else class="flex items-center gap-4">
           <div class="hidden sm:flex items-center gap-2 mr-4">
-             <div class="w-8 h-8 rounded-full bg-brand-accent/20 flex items-center justify-center text-brand-accent font-bold text-xs uppercase">{{ user?.email?.[0] || 'U' }}</div>
-             <span class="text-white/80 text-sm font-medium">{{ user?.email }}</span>
+             <div class="w-8 h-8 rounded-full bg-brand-accent/20 flex items-center justify-center text-brand-accent font-bold text-xs uppercase">{{ user?.name?.[0] || user?.email?.[0] || 'U' }}</div>
+             <span class="text-white/80 text-sm font-medium">{{ user?.name || user?.email }}</span>
           </div>
           <UButton @click="logout" color="neutral" variant="ghost" icon="i-heroicons-arrow-left-on-rectangle" class="text-white hover:bg-white/10" label="Logout" />
         </div>

@@ -8,7 +8,10 @@ export default defineNuxtConfig({
   ],
   css: ['~/assets/css/main.css'],
   runtimeConfig: {
-    databaseUrl: process.env.DATABASE_URL
+    databaseUrl: process.env.DATABASE_URL,
+    thaidClientId: process.env.THAID_CLIENT_ID,
+    thaidClientSecret: process.env.THAID_CLIENT_SECRET,
+    thaidCallbackUrl: process.env.THAID_CALLBACK_URL || 'http://localhost:3000/api/auth/thaid/callback'
   },
   future: {
     compatibilityVersion: 4
