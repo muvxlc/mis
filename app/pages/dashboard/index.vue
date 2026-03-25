@@ -185,22 +185,41 @@ const getPath = (data: any[], height: number) => {
           </div>
         </div>
 
-        <!-- Insurance Type Distribution (Secondary Chart) -->
-        <div class="bg-warm-white rounded-sm shadow-[8px_8px_0_var(--color-ink)] border-[3px] border-ink overflow-hidden flex flex-col mt-6">
+        <!-- Insurance Type Distribution (Redesigned) -->
+        <div class="bg-warm-white rounded-sm shadow-[8px_8px_0_var(--color-ink)] border-[3px] border-ink overflow-hidden flex flex-col mt-8">
            <div class="bg-cream border-b-[3px] border-ink p-4 px-6 flex justify-between items-center">
-            <h3 class="font-bold text-ink text-sm flex items-center gap-2 uppercase tracking-widest">
-              <UIcon name="i-heroicons-squares-plus" class="w-5 h-5 text-ink" />
-              Insurance Distribution
-            </h3>
+            <h2 class="font-bold text-ink text-sm flex items-center gap-2 uppercase tracking-widest">
+              <UIcon name="i-heroicons-square-3-stack-3d" class="w-5 h-5 text-ink" />
+              Insurance Traffic Distribution (Today)
+            </h2>
           </div>
-          <div class="p-6 grid grid-cols-2 md:grid-cols-4 gap-4">
-             <div v-for="item in dashboardStats?.visitDistribution" :key="item.pttype" 
-                  class="p-4 border-[2px] border-ink bg-white shadow-[4px_4px_0_var(--color-ink)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--color-ink)] transition-all">
-                <div class="text-[9px] font-bold uppercase text-ink-soft mb-1">{{ item.pttype }}</div>
-                <div class="text-xl font-display font-bold text-ink">{{ item.total_visits }}</div>
-                <div class="w-full h-1 mt-2 bg-cream border-[1px] border-ink overflow-hidden">
-                   <div :class="getColorForType(item.pttype)" :style="{ width: `${(item.total_visits / (dashboardStats.totalVisit as any)) * 100}%` }" class="h-full"></div>
+          <div class="p-8 space-y-6">
+             <div v-for="(item, idx) in dashboardStats?.visitDistribution" :key="item.pttype" 
+                  class="relative group">
+                <div class="flex justify-between items-center mb-2">
+                   <div class="flex items-center gap-3">
+                      <span class="text-[10px] font-bold text-ink-soft bg-white border-[2px] border-ink w-6 h-6 flex items-center justify-center shadow-[1px_1px_0_var(--color-ink)]">{{ idx + 1 }}</span>
+                      <span class="text-sm font-bold uppercase tracking-wide text-ink">{{ item.pttype }}</span>
+                   </div>
+                   <div class="flex items-baseline gap-2">
+                      <span class="text-lg font-display font-bold text-ink">{{ item.total_visits }}</span>
+                      <span class="text-[10px] font-bold text-ink-soft uppercase">Visits</span>
+                      <span class="text-[10px] font-bold text-teal bg-white border-[1px] border-teal px-1 ml-2">
+                         {{ Math.round((item.total_visits / (dashboardStats.totalVisit || 1)) * 100) }}%
+                      </span>
+                   </div>
                 </div>
+                <div class="h-6 w-full bg-cream border-[3px] border-ink shadow-[4px_4px_0_var(--color-ink)] overflow-hidden">
+                   <div 
+                      class="h-full border-r-[2px] border-ink transition-all duration-1000 ease-out"
+                      :class="getColorForType(item.pttype)"
+                      :style="{ width: `${(item.total_visits / ((dashboardStats.visitDistribution as any[])[0]?.total_visits || 1)) * 100}%` }"
+                   ></div>
+                </div>
+             </div>
+             
+             <div v-if="!dashboardStats?.visitDistribution?.length" class="text-center py-10 italic text-ink-soft font-bold">
+                No insurance data available yet.
              </div>
           </div>
         </div>
