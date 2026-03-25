@@ -17,12 +17,25 @@ export default defineEventHandler(async (event) => {
     const [activeUsersResult]: any = await hosxpDb.execute(sql`SELECT count(DISTINCT kskloginname) as total FROM onlineuser`);
     const activeUsers = activeUsersResult?.[0]?.total || 0;
 
+    // Fetch Visit Distribution by Insurance Type (pty.hipdata_code)
+    const [visitDistribution]: any = await hosxpDb.execute(sql`
+      SELECT 
+        COALESCE(pty.hipdata_code, 'Unknown') as pttype, 
+        COUNT(o.vn) AS total_visits
+      FROM ovst o
+      LEFT OUTER JOIN pttype pty ON o.pttype = pty.pttype
+      WHERE o.vstdate = CURRENT_DATE
+      GROUP BY pty.hipdata_code
+      ORDER BY total_visits DESC
+    `);
+
     const isConnected = true; // If we reached here, we are connected to HOSxP
 
     return {
       connected: isConnected,
       totalVisit,
       activeUsers,
+      visitDistribution,
       systemUptime: '99.9%',
       securityScore: 'A+',
       recentActivity: [],

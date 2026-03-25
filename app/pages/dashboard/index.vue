@@ -36,6 +36,17 @@ const recentActivities = computed(() => {
     { id: 3, user: 'Bot', action: 'Security Audit', time: '1 day ago', status: 'Completed' }
   ];
 });
+
+const getColorForType = (type: string) => {
+  const colors: Record<string, string> = {
+    'UCS': 'bg-teal',
+    'WEL': 'bg-gold',
+    'SSS': 'bg-coral',
+    'OFC': 'bg-cream',
+    'LGO': 'bg-ink'
+  };
+  return colors[type] || 'bg-teal';
+};
 </script>
 
 <template>
@@ -108,26 +119,37 @@ const recentActivities = computed(() => {
       <!-- Main Content Area -->
       <div class="lg:col-span-2 space-y-6">
         <div class="bg-warm-white rounded-sm shadow-[8px_8px_0_var(--color-ink)] border-[3px] border-ink overflow-hidden flex flex-col">
-          <div class="bg-cream border-b-[3px] border-ink p-4 px-6">
+          <div class="bg-cream border-b-[3px] border-ink p-4 px-6 flex justify-between items-center">
             <h3 class="font-bold text-ink text-sm flex items-center gap-2 uppercase tracking-widest">
-              <UIcon name="i-heroicons-server-stack" class="w-5 h-5 text-ink" />
-              Asset Inventory
+              <UIcon name="i-heroicons-chart-bar" class="w-5 h-5 text-ink" />
+              Visit Overview (By Insurance Type)
             </h3>
+            <span class="text-[10px] font-bold uppercase tracking-widest text-ink-soft bg-white border-[2px] border-ink shadow-[2px_2px_0_var(--color-ink)] px-2 py-0.5">{{ new Date().toLocaleDateString() }}</span>
           </div>
-          <div class="p-0 flex-1">
-            <UTable :rows="qrcodes || []" :columns="[{ id: 'id', accessorKey: 'id', header: 'ID' }, { id: 'type', accessorKey: 'type', header: 'Type' }, { id: 'originalUrl', accessorKey: 'originalUrl', header: 'Destination' }, { id: 'createdAt', accessorKey: 'createdAt', header: 'Date' }]" class="w-full font-bold">
-              <template #type-cell="{ row }">
-                <UBadge :color="row.original.type === 'dynamic' ? 'primary' : 'neutral'" variant="solid" class="uppercase text-[10px] font-bold rounded-sm border-[2px] border-ink shadow-[2px_2px_0_var(--color-ink)]" :class="row.original.type === 'dynamic' ? 'bg-gold text-ink' : 'bg-cream text-ink'">
-                  {{ row.original.type }}
-                </UBadge>
-              </template>
-              <template #createdAt-cell="{ row }">
-                <span class="text-ink-soft text-sm font-bold">{{ new Date(row.original.createdAt).toLocaleDateString() }}</span>
-              </template>
-            </UTable>
-            <div v-if="!qrcodes?.length" class="p-16 flex flex-col items-center justify-center text-ink-soft space-y-4 bg-warm-white">
-              <UIcon name="i-heroicons-inbox" class="w-16 h-16 text-ink opacity-20" />
-              <p class="font-bold text-sm tracking-wide">No assets found in the system database.</p>
+          <div class="p-8 flex-1 space-y-6 bg-warm-white">
+            <div v-if="dashboardStats?.visitDistribution?.length" class="space-y-6">
+              <div v-for="item in dashboardStats.visitDistribution" :key="item.pttype" class="space-y-2 group">
+                <div class="flex justify-between items-end mb-1">
+                  <span class="text-xs font-bold uppercase tracking-wider text-ink flex items-center gap-2">
+                     <div class="w-2 h-2 rounded-full border-[1px] border-ink" :class="getColorForType(item.pttype)"></div>
+                     {{ item.pttype }}
+                  </span>
+                  <span class="text-xs font-display font-bold text-ink">{{ item.total_visits }} visits</span>
+                </div>
+                <div class="h-8 w-full bg-cream border-[3px] border-ink shadow-[4px_4px_0_var(--color-ink)] group-hover:translate-x-[1px] group-hover:translate-y-[1px] group-hover:shadow-[2px_2px_0_var(--color-ink)] transition-all overflow-hidden relative">
+                   <div 
+                      class="h-full border-r-[3px] border-ink transition-all duration-700 ease-out"
+                      :class="getColorForType(item.pttype)"
+                      :style="{ width: `${(item.total_visits / Math.max(...(dashboardStats.visitDistribution as any[]).map(d => d.total_visits))) * 100}%` }"
+                   >
+                     <div class="absolute inset-0 bg-white opacity-10 mix-blend-overlay"></div>
+                   </div>
+                </div>
+              </div>
+            </div>
+            <div v-else class="p-16 flex flex-col items-center justify-center text-ink-soft space-y-4 bg-warm-white">
+              <UIcon name="i-heroicons-chart-bar" class="w-16 h-16 text-ink opacity-20" />
+              <p class="font-bold text-sm tracking-wide">No visit data found for today.</p>
             </div>
           </div>
         </div>
