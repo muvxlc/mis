@@ -1,19 +1,22 @@
+import { drizzle } from 'drizzle-orm/mysql2';
 import mysql from 'mysql2/promise';
 
-let pool: mysql.Pool;
+let _externalDb: ReturnType<typeof drizzle> | null = null;
 
 export function useExternalDb() {
-  if (!pool) {
+  if (!_externalDb) {
     const config = useRuntimeConfig();
     const dbUrl = config.secondaryDatabaseUrl;
     
     if (!dbUrl) {
       console.warn('SECONDARY_DATABASE_URL is not configured. External queries might fail.');
-      // return a placeholder or throw immediately if required
       throw createError({ statusCode: 500, message: 'Secondary database URL is missing.' });
     }
     
-    pool = mysql.createPool(dbUrl);
+    const pool = mysql.createPool(dbUrl);
+    // Bind Drizzle ORM to the secondary raw MariaDB pool
+    _externalDb = drizzle(pool);
   }
-  return pool;
+  
+  return _externalDb;
 }
