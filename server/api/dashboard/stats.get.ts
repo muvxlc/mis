@@ -29,6 +29,17 @@ export default defineEventHandler(async (event) => {
       ORDER BY total_visits DESC
     `);
 
+    // Fetch Hourly Visits today for Line Graph
+    const [hourlyVisits]: any = await hosxpDb.execute(sql`
+      SELECT 
+        HOUR(vsttime) as hour, 
+        COUNT(vn) as total 
+      FROM ovst 
+      WHERE vstdate = CURRENT_DATE 
+      GROUP BY hour 
+      ORDER BY hour
+    `);
+
     const isConnected = true; // If we reached here, we are connected to HOSxP
 
     return {
@@ -36,6 +47,7 @@ export default defineEventHandler(async (event) => {
       totalVisit,
       activeUsers,
       visitDistribution,
+      hourlyVisits,
       systemUptime: '99.9%',
       securityScore: 'A+',
       recentActivity: [],

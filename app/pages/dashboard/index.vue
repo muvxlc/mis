@@ -47,6 +47,17 @@ const getColorForType = (type: string) => {
   };
   return colors[type] || 'bg-teal';
 };
+
+const getPath = (data: any[], height: number) => {
+  if (!data?.length) return '';
+  const max = Math.max(...data.map(d => d.total));
+  const points = data.map((d, i) => {
+    const x = (i / (data.length - 1)) * 1000;
+    const y = height - (d.total / max) * 250;
+    return `${x},${y}`;
+  });
+  return `M ${points.join(' L ')}`;
+};
 </script>
 
 <template>
@@ -121,36 +132,76 @@ const getColorForType = (type: string) => {
         <div class="bg-warm-white rounded-sm shadow-[8px_8px_0_var(--color-ink)] border-[3px] border-ink overflow-hidden flex flex-col">
           <div class="bg-cream border-b-[3px] border-ink p-4 px-6 flex justify-between items-center">
             <h3 class="font-bold text-ink text-sm flex items-center gap-2 uppercase tracking-widest">
-              <UIcon name="i-heroicons-chart-bar" class="w-5 h-5 text-ink" />
-              Visit Overview (By Insurance Type)
+              <UIcon name="i-heroicons-presentation-chart-line" class="w-5 h-5 text-ink" />
+              Visit Traffic Hourly (Today)
             </h3>
-            <span class="text-[10px] font-bold uppercase tracking-widest text-ink-soft bg-white border-[2px] border-ink shadow-[2px_2px_0_var(--color-ink)] px-2 py-0.5">{{ new Date().toLocaleDateString() }}</span>
+            <span class="text-[10px] font-bold uppercase tracking-widest text-ink-soft bg-white border-[2px] border-ink shadow-[2px_2px_0_var(--color-ink)] px-2 py-0.5">Live Traffic</span>
           </div>
-          <div class="p-8 flex-1 space-y-6 bg-warm-white">
-            <div v-if="dashboardStats?.visitDistribution?.length" class="space-y-6">
-              <div v-for="item in dashboardStats.visitDistribution" :key="item.pttype" class="space-y-2 group">
-                <div class="flex justify-between items-end mb-1">
-                  <span class="text-xs font-bold uppercase tracking-wider text-ink flex items-center gap-2">
-                     <div class="w-2 h-2 rounded-full border-[1px] border-ink" :class="getColorForType(item.pttype)"></div>
-                     {{ item.pttype }}
-                  </span>
-                  <span class="text-xs font-display font-bold text-ink">{{ item.total_visits }} visits</span>
-                </div>
-                <div class="h-8 w-full bg-cream border-[3px] border-ink shadow-[4px_4px_0_var(--color-ink)] group-hover:translate-x-[1px] group-hover:translate-y-[1px] group-hover:shadow-[2px_2px_0_var(--color-ink)] transition-all overflow-hidden relative">
-                   <div 
-                      class="h-full border-r-[3px] border-ink transition-all duration-700 ease-out"
-                      :class="getColorForType(item.pttype)"
-                      :style="{ width: `${(item.total_visits / Math.max(...(dashboardStats.visitDistribution as any[]).map(d => d.total_visits))) * 100}%` }"
-                   >
-                     <div class="absolute inset-0 bg-white opacity-10 mix-blend-overlay"></div>
-                   </div>
-                </div>
+          <div class="p-8 flex-1 bg-warm-white">
+            <div v-if="dashboardStats?.hourlyVisits?.length" class="h-64 relative group">
+              <!-- Simple SVG Line Graph -->
+              <svg viewBox="0 0 1000 300" class="w-full h-full preserve-3d" preserveAspectRatio="none">
+                <!-- Drop Shadow Path for Line -->
+                <path 
+                  :d="getPath(dashboardStats.hourlyVisits, 305)" 
+                  fill="none" 
+                  stroke="var(--color-ink)" 
+                  stroke-width="8" 
+                  stroke-linejoin="round"
+                  class="opacity-10 translate-x-[4px] translate-y-[4px]"
+                />
+                <!-- Main Line Path -->
+                <path 
+                  :d="getPath(dashboardStats.hourlyVisits, 300)" 
+                  fill="none" 
+                  stroke="var(--color-teal)" 
+                  stroke-width="4" 
+                  stroke-linejoin="round"
+                  class="transition-all duration-1000 ease-out"
+                />
+                <!-- Data Points -->
+                <g v-for="(point, index) in dashboardStats.hourlyVisits" :key="index">
+                   <circle 
+                      :cx="(index / (dashboardStats.hourlyVisits.length - 1)) * 1000" 
+                      :cy="300 - (point.total / Math.max(...(dashboardStats.hourlyVisits as any[]).map(d => d.total))) * 250" 
+                      r="6" 
+                      fill="var(--color-gold)"
+                      stroke="var(--color-ink)"
+                      stroke-width="2"
+                      class="hover:scale-150 transition-transform cursor-pointer"
+                   />
+                </g>
+              </svg>
+
+              <!-- Labels Overlay -->
+              <div class="absolute bottom-0 left-0 w-full flex justify-between px-1 translate-y-6">
+                 <span v-for="point in dashboardStats.hourlyVisits" :key="point.hour" class="text-[8px] font-bold text-ink-soft uppercase">{{ point.hour }}:00</span>
               </div>
             </div>
             <div v-else class="p-16 flex flex-col items-center justify-center text-ink-soft space-y-4 bg-warm-white">
-              <UIcon name="i-heroicons-chart-bar" class="w-16 h-16 text-ink opacity-20" />
-              <p class="font-bold text-sm tracking-wide">No visit data found for today.</p>
+               <UIcon name="i-heroicons-presentation-chart-line" class="w-16 h-16 text-ink opacity-20" />
+               <p class="font-bold text-sm tracking-wide">No hourly visit data found yet.</p>
             </div>
+          </div>
+        </div>
+
+        <!-- Insurance Type Distribution (Secondary Chart) -->
+        <div class="bg-warm-white rounded-sm shadow-[8px_8px_0_var(--color-ink)] border-[3px] border-ink overflow-hidden flex flex-col mt-6">
+           <div class="bg-cream border-b-[3px] border-ink p-4 px-6 flex justify-between items-center">
+            <h3 class="font-bold text-ink text-sm flex items-center gap-2 uppercase tracking-widest">
+              <UIcon name="i-heroicons-squares-plus" class="w-5 h-5 text-ink" />
+              Insurance Distribution
+            </h3>
+          </div>
+          <div class="p-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+             <div v-for="item in dashboardStats?.visitDistribution" :key="item.pttype" 
+                  class="p-4 border-[2px] border-ink bg-white shadow-[4px_4px_0_var(--color-ink)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--color-ink)] transition-all">
+                <div class="text-[9px] font-bold uppercase text-ink-soft mb-1">{{ item.pttype }}</div>
+                <div class="text-xl font-display font-bold text-ink">{{ item.total_visits }}</div>
+                <div class="w-full h-1 mt-2 bg-cream border-[1px] border-ink overflow-hidden">
+                   <div :class="getColorForType(item.pttype)" :style="{ width: `${(item.total_visits / (dashboardStats.totalVisit as any)) * 100}%` }" class="h-full"></div>
+                </div>
+             </div>
           </div>
         </div>
       </div>
