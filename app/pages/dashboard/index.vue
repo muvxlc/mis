@@ -85,7 +85,7 @@ const recentActivities = computed(() => {
           </div>
           <div class="p-6 max-h-[60vh] overflow-y-auto">
              <ul class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-               <li v-for="username in onlineUsers" :key="username" class="flex items-center gap-2 p-2 bg-white border-[2px] border-ink shadow-[3px_3px_0_var(--color-ink)] font-bold text-ink hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0_var(--color-ink)] transition-all text-[10px] overflow-hidden text-ellipsis whitespace-nowrap">
+               <li v-for="username in onlineUsers" :key="username" class="flex items-center gap-2 p-2 bg-white border-[2px] border-ink shadow-[3px_3px_0_var(--color-ink)] font-bold text-ink hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0_var(--color-ink)] transition-all text-xs overflow-hidden text-ellipsis whitespace-nowrap">
                  <div class="w-2 h-2 rounded-full bg-teal animate-pulse border-[1px] border-ink shrink-0"></div>
                  {{ username }}
                </li>
