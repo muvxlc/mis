@@ -12,12 +12,17 @@ export default defineEventHandler(async (event) => {
     // Fetch Total Visits today
     const [visitCountResult]: any = await hosxpDb.execute(sql`SELECT count(vn) as total FROM ovst WHERE vstdate = CURRENT_DATE`);
     const totalVisit = visitCountResult?.[0]?.total || 0;
+
+    // Fetch Active Users (onlineuser)
+    const [activeUsersResult]: any = await hosxpDb.execute(sql`SELECT count(DISTINCT kskloginname) as total FROM onlineuser`);
+    const activeUsers = activeUsersResult?.[0]?.total || 0;
+
     const isConnected = true; // If we reached here, we are connected to HOSxP
 
     return {
       connected: isConnected,
       totalVisit,
-      activeUsers: 0,
+      activeUsers,
       systemUptime: '99.9%',
       securityScore: 'A+',
       recentActivity: [],

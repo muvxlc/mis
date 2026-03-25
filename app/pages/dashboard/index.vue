@@ -5,11 +5,19 @@ definePageMeta({
 
 const { user } = useUserSession();
 const { data: qrcodes } = await useFetch('/api/qrcodes');
-const { data: dashboardStats } = await useFetch('/api/dashboard/stats');
+const { data: dashboardStats, refresh: refreshStats } = await useFetch('/api/dashboard/stats');
+const { data: onlineUsers, refresh: refreshOnlineUsers } = await useFetch('/api/dashboard/online-users', { immediate: false });
+
+const isOnlineUsersModalOpen = ref(false);
+
+async function openOnlineUsersModal() {
+  await refreshOnlineUsers();
+  isOnlineUsersModalOpen.value = true;
+}
 
 const stats = computed(() => [
   { label: 'Total Visit', value: dashboardStats.value?.totalVisit ?? '0', icon: 'i-heroicons-calendar-days' },
-  { label: 'Active Users', value: dashboardStats.value?.activeUsers ?? '0', icon: 'i-heroicons-users' },
+  { label: 'Active Users', value: dashboardStats.value?.activeUsers ?? '0', icon: 'i-heroicons-users', clickable: true },
   { label: 'System Uptime', value: dashboardStats.value?.systemUptime ?? '99.9%', icon: 'i-heroicons-check-circle' },
   { label: 'Security Score', value: dashboardStats.value?.securityScore ?? 'A+', icon: 'i-heroicons-shield-check' }
 ]);
@@ -43,11 +51,15 @@ const recentActivities = computed(() => {
 
     <!-- Metrics Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <div v-for="stat in stats" :key="stat.label" class="bg-warm-white rounded-sm p-6 border-[3px] border-ink shadow-[6px_6px_0_var(--color-ink)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0_var(--color-ink)] transition-all duration-300 group cursor-default">
+      <div v-for="stat in stats" :key="stat.label" 
+          @click="stat.clickable ? openOnlineUsersModal() : null"
+          class="bg-warm-white rounded-sm p-6 border-[3px] border-ink shadow-[6px_6px_0_var(--color-ink)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0_var(--color-ink)] transition-all duration-300 group"
+          :class="stat.clickable ? 'cursor-pointer border-teal ring-2 ring-transparent hover:ring-teal active:scale-95' : 'cursor-default'">
         <div class="flex justify-between items-start mb-4">
            <div class="p-3 rounded-sm bg-cream border-[2px] border-ink text-ink group-hover:bg-gold transition-colors shadow-[2px_2px_0_var(--color-ink)]">
              <UIcon :name="stat.icon" class="w-6 h-6 stroke-[2px]" />
            </div>
+           <div v-if="stat.clickable" class="text-[10px] bg-teal font-bold px-2 py-1 border-[2px] border-ink rounded-sm shadow-[2px_2px_0_var(--color-ink)] uppercase">Click to view</div>
         </div>
         <div>
           <span class="text-[10px] uppercase tracking-widest text-ink-soft font-bold mb-1 block">{{ stat.label }}</span>
@@ -55,6 +67,30 @@ const recentActivities = computed(() => {
         </div>
       </div>
     </div>
+
+    <!-- Online Users Modal -->
+    <UModal v-model="isOnlineUsersModalOpen" :ui="{ content: 'bg-warm-white sm:max-w-md p-0', rounded: 'rounded-none' }">
+      <div class="p-1 border-[4px] border-ink shadow-[12px_12px_0_var(--color-ink)] bg-warm-white">
+        <div class="bg-cream border-b-[4px] border-ink p-4 flex justify-between items-center">
+           <h3 class="font-display font-bold text-xl uppercase tracking-tight">Active Online Users</h3>
+           <UButton color="neutral" variant="ghost" icon="i-heroicons-x-mark" @click="isOnlineUsersModalOpen = false" class="text-ink hover:bg-gold border-[2px] border-transparent hover:border-ink transition-all" />
+        </div>
+        <div class="p-6 max-h-[60vh] overflow-y-auto">
+           <ul class="space-y-3">
+             <li v-for="username in onlineUsers" :key="username" class="flex items-center gap-3 p-3 bg-white border-[2px] border-ink shadow-[4px_4px_0_var(--color-ink)] font-bold text-ink hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0_var(--color-ink)] transition-all">
+               <div class="w-2 h-2 rounded-full bg-teal animate-pulse border-[1px] border-ink"></div>
+               {{ username }}
+             </li>
+           </ul>
+           <div v-if="!onlineUsers?.length" class="text-center py-8 text-ink-soft font-bold uppercase tracking-widest text-sm italic">
+             No active users found.
+           </div>
+        </div>
+        <div class="bg-cream border-t-[4px] border-ink p-4 text-center">
+           <p class="text-[10px] uppercase tracking-widest font-bold text-ink-soft">Displaying {{ onlineUsers?.length || 0 }} logged-in users</p>
+        </div>
+      </div>
+    </UModal>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
       <!-- Main Content Area -->
