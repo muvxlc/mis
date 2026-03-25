@@ -69,16 +69,19 @@ const recentActivities = computed(() => {
     </div>
 
     <!-- Online Users Modal -->
-    <UModal v-model="isOnlineUsersModalOpen" :ui="{ content: 'bg-warm-white sm:max-w-md p-0', rounded: 'rounded-none' }">
+    <UModal v-model:open="isOnlineUsersModalOpen" title="Active Online Users" description="List of currently logged-in users in the system" :ui="{ content: 'bg-warm-white sm:max-w-2xl p-0', rounded: 'rounded-none' }">
       <div class="p-1 border-[4px] border-ink shadow-[12px_12px_0_var(--color-ink)] bg-warm-white">
         <div class="bg-cream border-b-[4px] border-ink p-4 flex justify-between items-center">
-           <h3 class="font-display font-bold text-xl uppercase tracking-tight">Active Online Users</h3>
+           <div class="space-y-1">
+             <h3 class="font-display font-bold text-xl uppercase tracking-tight">Active Online Users</h3>
+             <p class="text-[10px] uppercase font-bold text-ink-soft">Live connection data</p>
+           </div>
            <UButton color="neutral" variant="ghost" icon="i-heroicons-x-mark" @click="isOnlineUsersModalOpen = false" class="text-ink hover:bg-gold border-[2px] border-transparent hover:border-ink transition-all" />
         </div>
         <div class="p-6 max-h-[60vh] overflow-y-auto">
-           <ul class="space-y-3">
-             <li v-for="username in onlineUsers" :key="username" class="flex items-center gap-3 p-3 bg-white border-[2px] border-ink shadow-[4px_4px_0_var(--color-ink)] font-bold text-ink hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0_var(--color-ink)] transition-all">
-               <div class="w-2 h-2 rounded-full bg-teal animate-pulse border-[1px] border-ink"></div>
+           <ul class="grid grid-cols-2 md:grid-cols-3 gap-3">
+             <li v-for="username in onlineUsers" :key="username" class="flex items-center gap-2 p-2 bg-white border-[2px] border-ink shadow-[3px_3px_0_var(--color-ink)] font-bold text-ink hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0_var(--color-ink)] transition-all text-xs overflow-hidden text-ellipsis whitespace-nowrap">
+               <div class="w-2 h-2 rounded-full bg-teal animate-pulse border-[1px] border-ink shrink-0"></div>
                {{ username }}
              </li>
            </ul>
