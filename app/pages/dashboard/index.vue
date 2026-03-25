@@ -8,7 +8,7 @@ const { data: qrcodes } = await useFetch('/api/qrcodes');
 const { data: dashboardStats } = await useFetch('/api/dashboard/stats');
 
 const stats = computed(() => [
-  { label: 'Total Assets', value: dashboardStats.value?.totalAssets ?? (qrcodes.value?.length || 0), icon: 'i-heroicons-cube' },
+  { label: 'Total Visit', value: dashboardStats.value?.totalVisit ?? '0', icon: 'i-heroicons-calendar-days' },
   { label: 'Active Users', value: dashboardStats.value?.activeUsers ?? '0', icon: 'i-heroicons-users' },
   { label: 'System Uptime', value: dashboardStats.value?.systemUptime ?? '99.9%', icon: 'i-heroicons-check-circle' },
   { label: 'Security Score', value: dashboardStats.value?.securityScore ?? 'A+', icon: 'i-heroicons-shield-check' }

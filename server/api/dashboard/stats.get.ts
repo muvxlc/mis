@@ -9,18 +9,14 @@ export default defineEventHandler(async (event) => {
     // Get the HOSxP Drizzle instance
     const hosxpDb = useHosxpDb();
 
-    // Use Drizzle's sql`` template for raw queries on the HOSxP database
-    const metrics: any = await hosxpDb.execute(sql`SELECT 1 as connected`);
-    
-    const isConnected = Array.isArray(metrics[0]) ? metrics[0].length > 0 : !!metrics;
-
-    // Example:
-    // const result = await hosxpDb.execute(sql`SELECT COUNT(*) as total FROM patient`);
-    // const activeUsers = result[0][0].total;
+    // Fetch Total Visits today
+    const [visitCountResult]: any = await hosxpDb.execute(sql`SELECT count(vn) as total FROM ovst WHERE vstdate = CURRENT_DATE`);
+    const totalVisit = visitCountResult?.[0]?.total || 0;
+    const isConnected = true; // If we reached here, we are connected to HOSxP
 
     return {
       connected: isConnected,
-      totalAssets: 0,
+      totalVisit,
       activeUsers: 0,
       systemUptime: '99.9%',
       securityScore: 'A+',
@@ -33,7 +29,7 @@ export default defineEventHandler(async (event) => {
     return {
       connected: false,
       error: err.message,
-      totalAssets: 42,
+      totalVisit: 0,
       activeUsers: 1284,
       systemUptime: '99.9%',
       securityScore: 'A+',
