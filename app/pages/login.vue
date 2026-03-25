@@ -92,10 +92,10 @@ const onLogin = async () => {
                 external
                 block 
                 size="lg"
-                icon="i-heroicons-finger-print"
-                class="bg-coral hover:bg-coral-dark text-ink font-bold shadow-[4px_4px_0_var(--color-ink)] border-[3px] border-ink rounded-sm py-4 text-xs tracking-widest uppercase transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--color-ink)]"
+                class="bg-coral hover:bg-coral-dark text-ink font-bold shadow-[4px_4px_0_var(--color-ink)] border-[3px] border-ink rounded-sm py-3.5 text-xs tracking-widest uppercase transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--color-ink)]"
               >
-                Login with ThaiD
+                <img src="/thaid.png" alt="ThaiD Logo" class="w-6 h-6 shrink-0 rounded-[4px] border border-ink shadow-[1px_1px_0_var(--color-ink)] object-cover bg-white" />
+                <span>Login with ThaiD</span>
               </UButton>
             </div>
 
