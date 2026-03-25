@@ -5,10 +5,14 @@ definePageMeta({
 
 const { user } = useUserSession();
 const { data: qrcodes } = await useFetch('/api/qrcodes');
-const { data: dashboardStats, refresh: refreshStats } = await useFetch('/api/dashboard/stats');
+const { data: dashboardStats, refresh: refreshStats } = await useFetch<any>('/api/dashboard/stats');
 const { data: onlineUsers, refresh: refreshOnlineUsers } = await useFetch('/api/dashboard/online-users', { immediate: false });
 
 const isOnlineUsersModalOpen = ref(false);
+
+function closeOnlineUsersModal() {
+  isOnlineUsersModalOpen.value = false;
+}
 
 async function openOnlineUsersModal() {
   await refreshOnlineUsers();
@@ -23,7 +27,7 @@ const stats = computed(() => [
 ]);
 
 const recentActivities = computed(() => {
-  if (dashboardStats.value?.recentActivity && dashboardStats.value.recentActivity.length > 0) {
+  if (dashboardStats.value?.recentActivity && (dashboardStats.value.recentActivity as any[]).length > 0) {
     return dashboardStats.value.recentActivity;
   }
   return [
@@ -39,7 +43,7 @@ const recentActivities = computed(() => {
     <!-- Welcome Header -->
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b-[3px] border-ink">
       <div class="space-y-2">
-        <h1 class="text-4xl md:text-5xl font-display font-bold text-ink tracking-tight drop-shadow-sm">Welcome back, {{ user?.name || user?.email?.split('@')[0] || 'User' }}</h1>
+        <h1 class="text-4xl md:text-5xl font-display font-bold text-ink tracking-tight drop-shadow-sm">Welcome back, {{ (user as any)?.name || (user as any)?.email?.split('@')[0] || 'User' }}</h1>
         <p class="text-ink-soft font-bold tracking-wide text-sm bg-warm-white border-[2px] border-ink shadow-[2px_2px_0_var(--color-ink)] inline-block px-3 py-1 rounded-sm mt-2">Overview of your management information system</p>
       </div>
       <div class="flex gap-3 mt-4 md:mt-0">
@@ -69,18 +73,18 @@ const recentActivities = computed(() => {
     </div>
 
     <!-- Online Users Modal -->
-    <UModal v-model:open="isOnlineUsersModalOpen" title="Active Online Users" description="List of currently logged-in users in the system" :ui="{ content: 'bg-warm-white sm:max-w-2xl p-0', rounded: 'rounded-none' }">
+    <UModal v-model:open="isOnlineUsersModalOpen" title="Active Online Users" description="Live logged-in users list" :ui="{ content: 'bg-warm-white sm:max-w-4xl' }">
       <div class="p-1 border-[4px] border-ink shadow-[12px_12px_0_var(--color-ink)] bg-warm-white">
         <div class="bg-cream border-b-[4px] border-ink p-4 flex justify-between items-center">
            <div class="space-y-1">
              <h3 class="font-display font-bold text-xl uppercase tracking-tight">Active Online Users</h3>
              <p class="text-[10px] uppercase font-bold text-ink-soft">Live connection data</p>
            </div>
-           <UButton color="neutral" variant="ghost" icon="i-heroicons-x-mark" @click="isOnlineUsersModalOpen = false" class="text-ink hover:bg-gold border-[2px] border-transparent hover:border-ink transition-all" />
+           <UButton color="neutral" variant="ghost" icon="i-heroicons-x-mark" @click="closeOnlineUsersModal" class="text-ink hover:bg-gold border-[2px] border-transparent hover:border-ink transition-all" />
         </div>
         <div class="p-6 max-h-[60vh] overflow-y-auto">
-           <ul class="grid grid-cols-2 md:grid-cols-3 gap-3">
-             <li v-for="username in onlineUsers" :key="username" class="flex items-center gap-2 p-2 bg-white border-[2px] border-ink shadow-[3px_3px_0_var(--color-ink)] font-bold text-ink hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0_var(--color-ink)] transition-all text-xs overflow-hidden text-ellipsis whitespace-nowrap">
+           <ul class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+             <li v-for="username in onlineUsers" :key="username" class="flex items-center gap-2 p-2 bg-white border-[2px] border-ink shadow-[3px_3px_0_var(--color-ink)] font-bold text-ink hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0_var(--color-ink)] transition-all text-[10px] overflow-hidden text-ellipsis whitespace-nowrap">
                <div class="w-2 h-2 rounded-full bg-teal animate-pulse border-[1px] border-ink shrink-0"></div>
                {{ username }}
              </li>
@@ -91,7 +95,7 @@ const recentActivities = computed(() => {
         </div>
         <div class="bg-cream border-t-[4px] border-ink p-4 flex flex-col items-center gap-4">
            <p class="text-[10px] uppercase tracking-widest font-bold text-ink-soft">Displaying {{ onlineUsers?.length || 0 }} logged-in users</p>
-           <UButton class="w-full bg-ink text-warm-white font-bold hover:bg-gold hover:text-ink border-[2px] border-ink transition-all uppercase tracking-widest text-xs py-3" @click="isOnlineUsersModalOpen = false">
+           <UButton class="w-full bg-ink text-warm-white font-bold hover:bg-gold hover:text-ink border-[2px] border-ink transition-all uppercase tracking-widest text-xs py-3" @click="closeOnlineUsersModal">
              Close Details
            </UButton>
         </div>
