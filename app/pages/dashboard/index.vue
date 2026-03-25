@@ -73,33 +73,35 @@ const recentActivities = computed(() => {
     </div>
 
     <!-- Online Users Modal -->
-    <UModal v-model:open="isOnlineUsersModalOpen" :ui="{ content: 'bg-warm-white sm:max-w-4xl' }">
-      <div class="p-1 border-[4px] border-ink shadow-[12px_12px_0_var(--color-ink)] bg-warm-white">
-        <div class="bg-cream border-b-[4px] border-ink p-4 flex justify-between items-center">
-           <div class="space-y-1">
-             <h3 class="font-display font-bold text-xl uppercase tracking-tight">Active Online Users</h3>
-             <p class="text-[10px] uppercase font-bold text-ink-soft">Live connection data</p>
-           </div>
-           <UButton color="neutral" variant="ghost" icon="i-heroicons-x-mark" @click="closeOnlineUsersModal" class="text-ink hover:bg-gold border-[2px] border-transparent hover:border-ink transition-all" />
+    <UModal v-model:open="isOnlineUsersModalOpen" :ui="{ content: 'bg-transparent sm:max-w-4xl border-0 shadow-none ring-0' }">
+      <template #content>
+        <div class="p-1 border-[4px] border-ink shadow-[12px_12px_0_var(--color-ink)] bg-warm-white">
+          <div class="bg-cream border-b-[4px] border-ink p-4 flex justify-between items-center">
+             <div class="space-y-1">
+               <h3 class="font-display font-bold text-xl uppercase tracking-tight">Active Online Users</h3>
+               <p class="text-[10px] uppercase font-bold text-ink-soft">Live connection data</p>
+             </div>
+             <UButton color="neutral" variant="ghost" icon="i-heroicons-x-mark" @click="closeOnlineUsersModal" class="text-ink hover:bg-gold border-[2px] border-transparent hover:border-ink transition-all" />
+          </div>
+          <div class="p-6 max-h-[60vh] overflow-y-auto">
+             <ul class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+               <li v-for="username in onlineUsers" :key="username" class="flex items-center gap-2 p-2 bg-white border-[2px] border-ink shadow-[3px_3px_0_var(--color-ink)] font-bold text-ink hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0_var(--color-ink)] transition-all text-[10px] overflow-hidden text-ellipsis whitespace-nowrap">
+                 <div class="w-2 h-2 rounded-full bg-teal animate-pulse border-[1px] border-ink shrink-0"></div>
+                 {{ username }}
+               </li>
+             </ul>
+             <div v-if="!onlineUsers?.length" class="text-center py-8 text-ink-soft font-bold uppercase tracking-widest text-sm italic">
+               No active users found.
+             </div>
+          </div>
+          <div class="bg-cream border-t-[4px] border-ink p-4 flex flex-col items-center gap-4">
+             <p class="text-[10px] uppercase tracking-widest font-bold text-ink-soft">Displaying {{ onlineUsers?.length || 0 }} logged-in users</p>
+             <UButton class="w-full bg-ink text-warm-white font-bold hover:bg-gold hover:text-ink border-[2px] border-ink transition-all uppercase tracking-widest text-xs py-3" @click="closeOnlineUsersModal">
+               Close Details
+             </UButton>
+          </div>
         </div>
-        <div class="p-6 max-h-[60vh] overflow-y-auto">
-           <ul class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-             <li v-for="username in onlineUsers" :key="username" class="flex items-center gap-2 p-2 bg-white border-[2px] border-ink shadow-[3px_3px_0_var(--color-ink)] font-bold text-ink hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0_var(--color-ink)] transition-all text-[10px] overflow-hidden text-ellipsis whitespace-nowrap">
-               <div class="w-2 h-2 rounded-full bg-teal animate-pulse border-[1px] border-ink shrink-0"></div>
-               {{ username }}
-             </li>
-           </ul>
-           <div v-if="!onlineUsers?.length" class="text-center py-8 text-ink-soft font-bold uppercase tracking-widest text-sm italic">
-             No active users found.
-           </div>
-        </div>
-        <div class="bg-cream border-t-[4px] border-ink p-4 flex flex-col items-center gap-4">
-           <p class="text-[10px] uppercase tracking-widest font-bold text-ink-soft">Displaying {{ onlineUsers?.length || 0 }} logged-in users</p>
-           <UButton class="w-full bg-ink text-warm-white font-bold hover:bg-gold hover:text-ink border-[2px] border-ink transition-all uppercase tracking-widest text-xs py-3" @click="closeOnlineUsersModal">
-             Close Details
-           </UButton>
-        </div>
-      </div>
+      </template>
     </UModal>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
