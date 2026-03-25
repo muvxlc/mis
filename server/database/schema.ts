@@ -29,3 +29,9 @@ export const scans = mysqlTable('scans', {
   ipAddress: varchar('ip_address', { length: 45 }),
   timestamp: timestamp('timestamp').defaultNow().notNull()
 });
+
+export const rolePermissions = mysqlTable('role_permissions', {
+  role: varchar('role', { length: 20 }).primaryKey(),
+  permissions: json('permissions').notNull(),
+  description: text('description')
+});

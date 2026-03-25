@@ -22,15 +22,15 @@ const recentActivities = [
 </script>
 
 <template>
-  <div class="space-y-10 py-8 px-6 max-w-7xl mx-auto">
+  <div class="space-y-10 py-10 px-6 max-w-7xl mx-auto font-sans text-ink">
     <!-- Welcome Header -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
-      <div class="space-y-1">
-        <h1 class="text-4xl font-serif text-brand-primary">Welcome, {{ user?.email.split('@')[0] }}</h1>
-        <p class="text-slate-500 font-sans">MIS Dashboard & Strategic Overview</p>
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b-[3px] border-ink">
+      <div class="space-y-2">
+        <h1 class="text-4xl md:text-5xl font-display font-bold text-ink tracking-tight drop-shadow-sm">Welcome back, {{ user?.name || user?.email?.split('@')[0] || 'User' }}</h1>
+        <p class="text-ink-soft font-bold tracking-wide text-sm bg-warm-white border-[2px] border-ink shadow-[2px_2px_0_var(--color-ink)] inline-block px-3 py-1 rounded-sm mt-2">Overview of your management information system</p>
       </div>
-      <div class="flex gap-3">
-        <UButton to="/dashboard/create" icon="i-heroicons-plus" class="bg-brand-primary text-white hover:bg-slate-800 px-6 py-2.5 rounded-lg shadow-lg">
+      <div class="flex gap-3 mt-4 md:mt-0">
+        <UButton to="/dashboard/create" icon="i-heroicons-plus" class="bg-teal border-[3px] border-ink text-ink hover:bg-teal-dark px-6 py-3 rounded-sm shadow-[4px_4px_0_var(--color-ink)] font-bold transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--color-ink)] uppercase tracking-wider text-xs">
           New Asset
         </UButton>
       </div>
@@ -38,73 +38,78 @@ const recentActivities = [
 
     <!-- Metrics Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <div v-for="stat in stats" :key="stat.label" class="mac-window bg-white group hover:border-brand-accent transition-all duration-300">
-        <div class="p-6 space-y-4">
-          <div class="flex justify-between items-start">
-             <div :class="['p-3 rounded-xl bg-slate-50 group-hover:bg-brand-accent/10 transition-colors', stat.color]">
-               <UIcon :name="stat.icon" class="w-6 h-6" />
-             </div>
-          </div>
-          <div>
-            <span class="text-xs uppercase tracking-widest text-slate-400 font-bold">{{ stat.label }}</span>
-            <div class="text-3xl font-serif text-brand-primary mt-1">{{ stat.value }}</div>
-          </div>
+      <div v-for="stat in stats" :key="stat.label" class="bg-warm-white rounded-sm p-6 border-[3px] border-ink shadow-[6px_6px_0_var(--color-ink)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0_var(--color-ink)] transition-all duration-300 group cursor-default">
+        <div class="flex justify-between items-start mb-4">
+           <div class="p-3 rounded-sm bg-cream border-[2px] border-ink text-ink group-hover:bg-gold transition-colors shadow-[2px_2px_0_var(--color-ink)]">
+             <UIcon :name="stat.icon" class="w-6 h-6 stroke-[2px]" />
+           </div>
+        </div>
+        <div>
+          <span class="text-[10px] uppercase tracking-widest text-ink-soft font-bold mb-1 block">{{ stat.label }}</span>
+          <div class="text-4xl font-display font-bold text-ink tracking-tight drop-shadow-[1px_1px_0_var(--color-teal)]">{{ stat.value }}</div>
         </div>
       </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
       <!-- Main Content Area -->
       <div class="lg:col-span-2 space-y-6">
-        <div class="mac-window overflow-hidden">
-          <div class="mac-title-bar">
-            <div class="mac-dot mac-dot-red" />
-            <div class="mac-dot mac-dot-yellow" />
-            <div class="mac-dot mac-dot-green" />
-            <span class="ml-4 text-xs text-white/50 font-sans tracking-widest uppercase">Asset Management</span>
+        <div class="bg-warm-white rounded-sm shadow-[8px_8px_0_var(--color-ink)] border-[3px] border-ink overflow-hidden flex flex-col">
+          <div class="bg-cream border-b-[3px] border-ink p-4 px-6">
+            <h3 class="font-bold text-ink text-sm flex items-center gap-2 uppercase tracking-widest">
+              <UIcon name="i-heroicons-server-stack" class="w-5 h-5 text-ink" />
+              Asset Inventory
+            </h3>
           </div>
-          <div class="p-0">
-            <UTable :rows="qrcodes || []" :columns="[{ id: 'id', accessorKey: 'id', header: 'ID' }, { id: 'type', accessorKey: 'type', header: 'Type' }, { id: 'originalUrl', accessorKey: 'originalUrl', header: 'Destination' }, { id: 'createdAt', accessorKey: 'createdAt', header: 'Date' }]" class="w-full">
+          <div class="p-0 flex-1">
+            <UTable :rows="qrcodes || []" :columns="[{ id: 'id', accessorKey: 'id', header: 'ID' }, { id: 'type', accessorKey: 'type', header: 'Type' }, { id: 'originalUrl', accessorKey: 'originalUrl', header: 'Destination' }, { id: 'createdAt', accessorKey: 'createdAt', header: 'Date' }]" class="w-full font-bold">
               <template #type-cell="{ row }">
-                <UBadge :color="row.original.type === 'dynamic' ? 'primary' : 'gray'" variant="soft" class="uppercase text-[10px] font-bold">
+                <UBadge :color="row.original.type === 'dynamic' ? 'primary' : 'neutral'" variant="solid" class="uppercase text-[10px] font-bold rounded-sm border-[2px] border-ink shadow-[2px_2px_0_var(--color-ink)]" :class="row.original.type === 'dynamic' ? 'bg-gold text-ink' : 'bg-cream text-ink'">
                   {{ row.original.type }}
                 </UBadge>
               </template>
               <template #createdAt-cell="{ row }">
-                <span class="text-slate-400 text-xs">{{ new Date(row.original.createdAt).toLocaleDateString() }}</span>
+                <span class="text-ink-soft text-sm font-bold">{{ new Date(row.original.createdAt).toLocaleDateString() }}</span>
               </template>
             </UTable>
-            <div v-if="!qrcodes?.length" class="p-12 text-center text-slate-400 font-sans italic">
-              No assets found in the system database.
+            <div v-if="!qrcodes?.length" class="p-16 flex flex-col items-center justify-center text-ink-soft space-y-4 bg-warm-white">
+              <UIcon name="i-heroicons-inbox" class="w-16 h-16 text-ink opacity-20" />
+              <p class="font-bold text-sm tracking-wide">No assets found in the system database.</p>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Sidebar / Secondary Data -->
-      <div class="space-y-6">
-        <div class="mac-window">
-          <div class="mac-title-bar">
-            <span class="text-xs text-white/70 font-sans tracking-widest uppercase px-4">System Activity</span>
+      <div class="space-y-6 flex flex-col">
+        <div class="bg-warm-white rounded-sm shadow-[8px_8px_0_var(--color-ink)] border-[3px] border-ink overflow-hidden">
+          <div class="bg-cream border-b-[3px] border-ink p-4 px-6">
+            <h3 class="font-bold text-ink text-sm flex items-center gap-2 uppercase tracking-widest">
+              <UIcon name="i-heroicons-bolt" class="w-5 h-5 text-ink" />
+              Recent Activity
+            </h3>
           </div>
           <div class="p-6 space-y-6">
-            <div v-for="activity in recentActivities" :key="activity.id" class="flex gap-4">
-              <div class="w-2 h-2 rounded-full mt-1.5" :class="activity.status === 'Completed' ? 'bg-green-500' : 'bg-brand-accent'" />
-              <div class="space-y-1">
-                <p class="text-sm font-bold text-brand-primary">{{ activity.action }}</p>
-                <p class="text-xs text-slate-400">{{ activity.user }} • {{ activity.time }}</p>
+            <div v-for="activity in recentActivities" :key="activity.id" class="flex gap-4 items-start">
+              <div class="w-3 h-3 rounded-full mt-1 shrink-0 border-[2px] border-ink" :class="activity.status === 'Completed' ? 'bg-teal shadow-[2px_2px_0_var(--color-teal)]' : 'bg-gold shadow-[2px_2px_0_var(--color-gold)]'" />
+              <div class="space-y-1 -mt-1">
+                <p class="text-sm font-bold text-ink">{{ activity.action }}</p>
+                <p class="text-[10px] uppercase tracking-widest font-bold text-ink-soft">{{ activity.user }} &middot; {{ activity.time }}</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="bg-brand-primary rounded-2xl p-8 text-white space-y-4 shadow-xl relative overflow-hidden group">
-          <div class="relative z-10">
-            <h3 class="text-xl font-serif">Need Help?</h3>
-            <p class="text-white/60 text-sm">Access the MIS knowledge base or contact system administrators.</p>
-            <UButton color="white" variant="link" class="p-0 mt-4 text-brand-accent font-bold" icon="i-heroicons-arrow-right">Read Documentation</UButton>
+        <div class="bg-ink rounded-sm p-8 text-warm-white shadow-[8px_8px_0_var(--color-ink-soft)] relative overflow-hidden group border-[3px] border-ink mt-auto">
+          <div class="absolute inset-0 bg-coral opacity-10"></div>
+          <div class="relative z-10 space-y-4">
+            <h3 class="text-2xl font-display font-bold tracking-tight drop-shadow-md">Need Help?</h3>
+            <p class="text-cream text-sm font-bold leading-relaxed max-w-[90%]">Access the knowledge base or contact sysadmins for support.</p>
+            <div class="pt-4">
+              <UButton color="neutral" variant="link" class="p-0 text-teal hover:text-gold font-bold transition-colors uppercase tracking-widest text-xs" icon="i-heroicons-book-open">Read Docs</UButton>
+            </div>
           </div>
-          <UIcon name="i-heroicons-academic-cap" class="absolute -right-4 -bottom-4 w-32 h-32 text-white/5 rotate-12 group-hover:scale-110 transition-transform duration-500" />
+          <UIcon name="i-heroicons-lifebuoy" class="absolute -right-6 -bottom-6 w-32 h-32 text-warm-white opacity-[0.05] group-hover:scale-110 group-hover:-rotate-12 transition-all duration-500" />
         </div>
       </div>
     </div>

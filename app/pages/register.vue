@@ -43,17 +43,12 @@ const onRegister = async () => {
 <template>
   <div class="min-h-[80vh] flex items-center justify-center px-6 py-12">
     <div class="w-full max-w-md">
-      <div class="mac-window">
-        <div class="mac-title-bar">
-          <div class="mac-dot mac-dot-red" />
-          <div class="mac-dot mac-dot-yellow" />
-          <div class="mac-dot mac-dot-green" />
-        </div>
-        
-        <div class="p-10 space-y-8 bg-white">
-          <div class="text-center space-y-2">
-            <h2 class="text-3xl font-serif text-brand-primary">Create Your Account</h2>
-            <p class="text-slate-500 text-sm font-sans">Start managing professional QR codes today</p>
+      <div class="bg-white rounded-[2rem] shadow-2xl shadow-blue-900/5 border border-slate-200/60 overflow-hidden relative">
+        <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-400 to-blue-600"></div>
+        <div class="p-10 space-y-8 bg-white relative z-10">
+          <div class="text-center space-y-3">
+            <h2 class="text-3xl font-bold text-slate-900 tracking-tight">Create Your Account</h2>
+            <p class="text-slate-500 text-sm font-medium">Start managing professional QR codes today</p>
           </div>
 
           <UForm :state="state" class="space-y-6" @submit="onRegister">
@@ -65,8 +60,7 @@ const onRegister = async () => {
                 size="lg"
                 class="w-full"
                 :ui="{ 
-                  base: 'bg-white border-slate-200 shadow-sm focus:ring-brand-accent focus:border-brand-accent',
-                  rounded: 'rounded-lg'
+                  base: 'bg-white border-slate-200 shadow-sm focus:ring-blue-600 focus:border-blue-600'
                 }"
               />
             </UFormField>
@@ -80,8 +74,7 @@ const onRegister = async () => {
                 size="lg"
                 class="w-full"
                 :ui="{ 
-                  base: 'bg-white border-slate-200 shadow-sm focus:ring-brand-accent focus:border-brand-accent',
-                  rounded: 'rounded-lg'
+                  base: 'bg-white border-slate-200 shadow-sm focus:ring-blue-600 focus:border-blue-600'
                 }"
               />
             </UFormField>
@@ -95,28 +88,27 @@ const onRegister = async () => {
                 size="lg"
                 class="w-full"
                 :ui="{ 
-                  base: 'bg-white border-slate-200 shadow-sm focus:ring-brand-accent focus:border-brand-accent',
-                  rounded: 'rounded-lg'
+                  base: 'bg-white border-slate-200 shadow-sm focus:ring-blue-600 focus:border-blue-600'
                 }"
               />
             </UFormField>
 
-            <div class="pt-2">
+            <div class="pt-4">
               <UButton 
                 type="submit" 
                 block 
                 size="lg"
                 :loading="loading"
-                class="bg-brand-primary text-white hover:bg-slate-800 font-bold py-3 rounded-lg shadow-md transition-all active:scale-[0.98]"
+                class="bg-blue-600 text-white hover:bg-blue-700 font-bold py-3.5 rounded-xl shadow-md transition-all active:scale-[0.98]"
               >
                 Create Account
               </UButton>
             </div>
 
-            <div class="text-center pt-4 border-t border-slate-100">
-              <p class="text-sm text-slate-500">
+            <div class="text-center pt-6 border-t border-slate-100 mt-2">
+              <p class="text-sm text-slate-500 font-medium">
                 Already have an account? 
-                <NuxtLink to="/login" class="text-brand-accent font-bold hover:underline ml-1">Sign in</NuxtLink>
+                <NuxtLink to="/login" class="text-blue-600 font-bold hover:text-blue-700 hover:underline ml-1">Sign in</NuxtLink>
               </p>
             </div>
           </UForm>

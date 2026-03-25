@@ -46,13 +46,11 @@ const canEdit = (targetUser: any) => {
   return false;
 };
 
-// ฟังก์ชันดึงข้อมูลแบบเน้นความชัวร์
 const loadData = async () => {
   pending.value = true;
   try {
     const data = await $fetch('/api/admin/users');
     users.value = Array.isArray(data) ? data : [];
-    console.log('Client-side data received:', users.value);
   } catch (err: any) {
     console.error('Fetch error:', err);
     toast.add({ title: 'Error loading data', description: err.message, color: 'error' });
@@ -109,7 +107,7 @@ const onEdit = (user: any) => {
   form.id = user.id;
   form.email = user.email;
   form.role = user.role;
-  form.password = ''; // Clear for optional reset password
+  form.password = '';
 };
 
 const onDelete = async (userId: number) => {
@@ -126,73 +124,80 @@ const onDelete = async (userId: number) => {
 </script>
 
 <template>
-  <div class="py-12 px-6 max-w-7xl mx-auto space-y-10 font-sans text-brand-primary">
+  <div class="py-10 px-6 max-w-7xl mx-auto space-y-10 font-sans text-ink">
     <!-- Header -->
-    <div class="flex justify-between items-end border-b border-slate-200 pb-6">
-      <div class="space-y-1">
-        <h1 class="text-4xl font-serif">User Management</h1>
-        <p class="text-slate-500 uppercase tracking-widest text-[10px] font-bold">MIS Administration Terminal</p>
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b-[3px] border-ink">
+      <div class="space-y-2">
+        <h1 class="text-4xl md:text-5xl font-display font-bold text-ink tracking-tight drop-shadow-sm">User Management</h1>
+        <p class="text-ink-soft font-bold tracking-wide text-sm bg-warm-white border-[2px] border-ink shadow-[2px_2px_0_var(--color-ink)] inline-block px-3 py-1 rounded-sm mt-2">MIS Administration Terminal</p>
       </div>
       <UButton 
         v-if="!isFormOpen"
         icon="i-heroicons-user-plus" 
         label="Add User" 
         @click="isFormOpen = true" 
-        class="bg-brand-primary text-white font-bold px-6 shadow-lg hover:bg-slate-800" 
+        class="bg-teal hover:bg-teal-dark text-ink border-[3px] border-ink font-bold px-6 py-3 rounded-sm shadow-[4px_4px_0_var(--color-ink)] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--color-ink)] uppercase tracking-wider text-xs" 
       />
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-4 gap-10 items-start">
-      <!-- User List Table (Manual Construction) -->
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
+      <!-- User List Table -->
       <div :class="[isFormOpen ? 'lg:col-span-3' : 'lg:col-span-4']" class="transition-all duration-500">
-        <div class="mac-window bg-white shadow-2xl border border-slate-200">
-          <div class="mac-title-bar flex justify-between px-4">
-            <div class="flex gap-1.5">
-              <div class="mac-dot mac-dot-red" />
-              <div class="mac-dot mac-dot-yellow" />
-              <div class="mac-dot mac-dot-green" />
-            </div>
-            <span class="text-[10px] text-white/40 font-mono tracking-widest uppercase">Database_Records</span>
+        <div class="bg-warm-white rounded-sm shadow-[8px_8px_0_var(--color-ink)] border-[3px] border-ink overflow-hidden flex flex-col">
+          <div class="bg-cream border-b-[3px] border-ink p-4 px-6 flex justify-between items-center">
+            <h3 class="font-bold text-ink text-sm flex items-center gap-2 uppercase tracking-widest">
+              <UIcon name="i-heroicons-users" class="w-5 h-5 text-ink" />
+              Database Records
+            </h3>
           </div>
           
           <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
               <thead>
-                <tr class="bg-slate-50 border-b border-slate-100 text-[11px] uppercase tracking-wider font-bold text-slate-400">
+                <tr class="bg-cream border-b-[3px] border-ink text-[10px] uppercase tracking-widest font-bold text-ink-soft">
                   <th class="px-6 py-4">ID</th>
-                  <th class="px-6 py-4">Email Address</th>
+                  <th class="px-6 py-4">Account Identity</th>
                   <th class="px-6 py-4">Role</th>
                   <th class="px-6 py-4">Actions</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-slate-50">
+              <tbody class="divide-y-[3px] divide-ink bg-warm-white font-bold">
                 <!-- Loading State -->
                 <tr v-if="pending">
-                  <td colspan="4" class="px-6 py-20 text-center">
-                    <UIcon name="i-heroicons-arrow-path" class="w-8 h-8 animate-spin text-brand-accent mx-auto" />
-                    <p class="mt-2 text-sm text-slate-400">Fetching records...</p>
+                  <td colspan="4" class="px-6 py-24 text-center">
+                    <UIcon name="i-heroicons-arrow-path" class="w-8 h-8 animate-spin text-ink mx-auto" />
+                    <p class="mt-3 text-xs font-bold text-ink-soft uppercase tracking-widest">Fetching records...</p>
                   </td>
                 </tr>
 
                 <!-- Data Rows -->
-                <tr v-for="user in users" :key="user.id" class="hover:bg-slate-50/50 transition-colors group">
-                  <td class="px-6 py-4 font-mono text-xs text-slate-400">#{{ user.id }}</td>
-                  <td class="px-6 py-4">
-                    <span class="font-bold text-brand-primary">{{ user.email }}</span>
+                <tr v-for="user in users" :key="user.id" class="hover:bg-gold/10 group transition-colors">
+                  <td class="px-6 py-5 font-mono text-[11px] font-bold text-ink-soft">#{{ user.id }}</td>
+                  <td class="px-6 py-5">
+                    <div class="flex items-center gap-3">
+                      <div class="w-10 h-10 rounded-sm bg-cream border-[2px] border-ink shadow-[2px_2px_0_var(--color-ink)] flex items-center justify-center text-ink shrink-0 font-bold uppercase text-sm">
+                         {{ user.name?.[0] || user.email?.[0] || 'U' }}
+                      </div>
+                      <div class="flex flex-col">
+                         <span class="font-bold text-ink text-sm">{{ user.name || user.email.split('@')[0] }}</span>
+                         <span class="font-bold text-ink-soft text-[11px]">{{ user.email }}</span>
+                      </div>
+                    </div>
                   </td>
-                  <td class="px-6 py-4">
+                  <td class="px-6 py-5">
                     <UBadge 
                       :color="user.role === 'superadmin' ? 'error' : (user.role === 'admin' ? 'primary' : 'neutral')" 
-                      variant="soft" 
-                      class="uppercase text-[9px] font-black px-2 py-0.5"
+                      variant="solid" 
+                      class="uppercase text-[10px] font-bold px-2 py-0.5 rounded-sm border-[2px] border-ink shadow-[2px_2px_0_var(--color-ink)]"
+                      :class="{ 'bg-coral': user.role === 'superadmin', 'bg-teal': user.role === 'admin', 'bg-cream text-ink': user.role === 'user' }"
                     >
                       {{ user.role }}
                     </UBadge>
                   </td>
-                  <td class="px-6 py-4">
+                  <td class="px-6 py-5">
                     <div class="flex gap-2">
-                       <UButton v-if="canEdit(user)" icon="i-heroicons-pencil-square" variant="ghost" color="neutral" size="sm" @click="onEdit(user)" />
-                      <UButton v-if="canDelete(user)" icon="i-heroicons-trash" variant="ghost" color="error" size="sm" @click="onDelete(user.id)" />
+                       <UButton v-if="canEdit(user)" icon="i-heroicons-pencil-square" variant="ghost" color="neutral" class="text-ink-soft hover:text-teal hover:bg-transparent" size="md" @click="onEdit(user)" />
+                      <UButton v-if="canDelete(user)" icon="i-heroicons-trash" variant="ghost" color="error" class="text-ink-soft hover:text-coral hover:bg-transparent" size="md" @click="onDelete(user.id)" />
                     </div>
                   </td>
                 </tr>
@@ -200,8 +205,10 @@ const onDelete = async (userId: number) => {
                 <!-- Empty State -->
                 <tr v-if="!pending && users.length === 0">
                   <td colspan="4" class="px-6 py-32 text-center">
-                    <UIcon name="i-heroicons-circle-stack" class="w-12 h-12 text-slate-100 mx-auto" />
-                    <p class="text-slate-300 font-serif italic">The personnel database is currently empty.</p>
+                    <div class="w-20 h-20 bg-warm-white border-[3px] border-ink shadow-[4px_4px_0_var(--color-ink)] rounded-sm flex items-center justify-center mx-auto mb-4">
+                      <UIcon name="i-heroicons-circle-stack" class="w-10 h-10 text-ink opacity-40" />
+                    </div>
+                    <p class="text-ink-soft font-bold text-sm tracking-wide">The personnel database is currently empty.</p>
                   </td>
                 </tr>
               </tbody>
@@ -212,36 +219,38 @@ const onDelete = async (userId: number) => {
 
       <!-- Registration Form (Side Panel) -->
       <div v-if="isFormOpen" class="lg:col-span-1 animate-in slide-in-from-right duration-500">
-        <div class="mac-window border-brand-accent shadow-2xl overflow-hidden bg-white">
-          <div class="mac-title-bar bg-brand-accent px-4 py-2 flex justify-between items-center">
-            <span class="text-[10px] text-brand-primary font-black uppercase tracking-widest">
+        <div class="bg-warm-white rounded-sm shadow-[8px_8px_0_var(--color-ink)] border-[3px] border-ink overflow-hidden flex flex-col relative top-0 sticky">
+          <div class="bg-gold/50 border-b-[3px] border-ink p-4 px-6 flex justify-between items-center">
+            <span class="text-sm font-bold text-ink uppercase tracking-widest flex items-center gap-2">
+              <UIcon :name="isEditing ? 'i-heroicons-pencil-square' : 'i-heroicons-user-plus'" class="w-5 h-5 text-ink" />
               {{ isEditing ? 'Edit Profile' : 'Register Member' }}
             </span>
-            <UButton icon="i-heroicons-x-mark" variant="ghost" color="neutral" size="xs" @click="resetForm()" />
+            <UButton icon="i-heroicons-x-mark" variant="ghost" color="neutral" size="sm" @click="resetForm()" class="text-ink hover:text-coral hover:bg-transparent p-0" />
           </div>
-          <div class="p-8 space-y-6">
-            <UForm :state="form" class="space-y-5" @submit="onSubmit">
+          
+          <div class="p-6 space-y-6">
+            <UForm :state="form" class="space-y-6 font-bold text-ink [&_label]:text-ink [&_label]:font-bold [&_label]:text-sm [&_label]:tracking-wide [&_label]:mb-1.5" @submit="onSubmit">
               <UFormField label="Email Identity">
-                <UInput v-model="form.email" placeholder="name@company.com" size="lg" class="w-full bg-slate-50" />
+                <UInput v-model="form.email" placeholder="name@company.com" size="lg" class="w-full" :ui="{ base: 'shadow-[2px_2px_0_var(--color-ink)] border-[2px] border-ink rounded-sm bg-white font-bold text-ink placeholder:text-ink-soft' }" />
               </UFormField>
               
               <UFormField :label="isEditing ? 'Reset Access Key (Optional)' : 'Access Key (Password)'">
-                <UInput v-model="form.password" type="password" placeholder="••••••••" size="lg" class="w-full bg-slate-50" />
+                <UInput v-model="form.password" type="password" placeholder="••••••••" size="lg" class="w-full" :ui="{ base: 'shadow-[2px_2px_0_var(--color-ink)] border-[2px] border-ink rounded-sm bg-white font-bold text-ink placeholder:text-ink-soft' }" />
               </UFormField>
               
               <UFormField label="System Privilege">
                 <select 
                   v-model="form.role" 
-                  class="w-full bg-slate-50 border border-slate-200 text-slate-700 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary transition-all shadow-sm"
+                  class="w-full bg-white shadow-[2px_2px_0_var(--color-ink)] border-[2px] border-ink text-ink rounded-sm px-4 py-3 text-sm focus:outline-none focus:ring-0 transition-all font-bold"
                 >
-                  <option v-for="r in availableRoles" :key="r.value" :value="r.value">
+                  <option v-for="r in availableRoles" :key="r.value" :value="r.value" class="font-bold">
                     {{ r.label }}
                   </option>
                 </select>
               </UFormField>
 
-              <div class="pt-6">
-                <UButton type="submit" block size="xl" :loading="loading" class="bg-brand-primary text-white font-bold shadow-lg shadow-brand-primary/20 hover:bg-slate-800">
+              <div class="pt-6 border-t-[3px] border-ink">
+                <UButton type="submit" block size="lg" :loading="loading" class="bg-coral hover:bg-coral-dark text-ink font-bold shadow-[4px_4px_0_var(--color-ink)] border-[3px] border-ink rounded-sm py-4 text-xs tracking-widest uppercase transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--color-ink)]">
                   {{ isEditing ? 'Update Records' : 'Confirm Registration' }}
                 </UButton>
               </div>
