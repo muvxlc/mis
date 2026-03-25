@@ -73,7 +73,7 @@ const recentActivities = computed(() => {
     </div>
 
     <!-- Online Users Modal -->
-    <UModal v-model:open="isOnlineUsersModalOpen" :ui="{ content: 'bg-transparent sm:max-w-4xl border-0 shadow-none ring-0' }">
+    <UModal v-model:open="isOnlineUsersModalOpen" title="Active Online Users" description="Live logged-in users list" :ui="{ content: 'bg-transparent sm:max-w-4xl border-0 shadow-none ring-0' }">
       <template #content>
         <div class="p-1 border-[4px] border-ink shadow-[12px_12px_0_var(--color-ink)] bg-warm-white">
           <div class="bg-cream border-b-[4px] border-ink p-4 flex justify-between items-center">
