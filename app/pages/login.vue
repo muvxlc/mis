@@ -34,16 +34,15 @@ const onLogin = async () => {
 <template>
   <div class="min-h-[80vh] flex items-center justify-center px-6">
     <div class="w-full max-w-md">
-      <div class="bg-white rounded-[2rem] shadow-2xl shadow-blue-900/5 border border-slate-200/60 overflow-hidden relative">
-        <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-400 to-blue-600"></div>
-        <div class="p-10 space-y-8 bg-white relative z-10">
-          <div class="text-center space-y-3">
-            <h2 class="text-3xl font-bold text-slate-900 tracking-tight">Welcome Back</h2>
-            <p class="text-slate-500 text-sm font-medium">Enter your credentials to access your dashboard</p>
+      <div class="bg-warm-white rounded-sm shadow-[8px_8px_0_var(--color-ink)] border-[3px] border-ink overflow-hidden border-t-[8px] border-t-teal">
+        <div class="p-10 space-y-8 relative z-10">
+          <div class="text-center space-y-4">
+            <h2 class="text-4xl font-display font-bold text-ink tracking-tight drop-shadow-sm">Welcome Back</h2>
+            <p class="text-ink text-sm font-bold bg-cream inline-block px-3 py-1 border-[2px] border-ink shadow-[2px_2px_0_var(--color-ink)] rounded-sm">Enter your credentials to access your dashboard</p>
           </div>
 
-          <UForm :state="state" class="space-y-6" @submit="onLogin">
-            <UFormField label="Email Address or Citizen ID" name="identifier" class="font-sans">
+          <UForm :state="state" class="space-y-6 font-bold text-ink [&_label]:text-ink [&_label]:font-bold [&_label]:text-sm [&_label]:tracking-wide [&_label]:mb-1.5" @submit="onLogin">
+            <UFormField label="Email Address or Citizen ID" name="identifier">
               <UInput 
                 v-model="state.identifier" 
                 placeholder="name@company.com or 1100..." 
@@ -51,12 +50,12 @@ const onLogin = async () => {
                 size="lg"
                 class="w-full"
                 :ui="{ 
-                  base: 'bg-white border-slate-200 shadow-sm focus:ring-blue-600 focus:border-blue-600'
+                  base: 'shadow-[2px_2px_0_var(--color-ink)] border-[2px] border-ink rounded-sm bg-white font-bold text-ink placeholder:text-ink-soft'
                 }"
               />
             </UFormField>
             
-            <UFormField label="Password" name="password" class="font-sans">
+            <UFormField label="Access Key (Password)" name="password">
               <UInput 
                 v-model="state.password" 
                 type="password" 
@@ -65,7 +64,7 @@ const onLogin = async () => {
                 size="lg"
                 class="w-full"
                 :ui="{ 
-                  base: 'bg-white border-slate-200 shadow-sm focus:ring-blue-600 focus:border-blue-600'
+                  base: 'shadow-[2px_2px_0_var(--color-ink)] border-[2px] border-ink rounded-sm bg-white font-bold text-ink placeholder:text-ink-soft'
                 }"
               />
             </UFormField>
@@ -76,15 +75,15 @@ const onLogin = async () => {
                 block 
                 size="lg"
                 :loading="loading"
-                class="bg-blue-600 text-white hover:bg-blue-700 font-bold py-3.5 rounded-xl shadow-md transition-all active:scale-[0.98]"
+                class="bg-teal hover:bg-teal-dark text-ink font-bold shadow-[4px_4px_0_var(--color-ink)] border-[3px] border-ink rounded-sm py-4 text-xs tracking-widest uppercase transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--color-ink)]"
               >
                 Sign In to MIS
               </UButton>
             </div>
 
             <div class="relative flex items-center justify-center pt-2">
-              <div class="w-full h-px bg-slate-200"></div>
-              <span class="absolute bg-white px-4 text-[11px] text-slate-400 font-bold tracking-widest uppercase">OR CONTINUE WITH</span>
+              <div class="w-full h-[3px] bg-ink"></div>
+              <span class="absolute bg-warm-white px-4 text-[11px] text-ink font-black tracking-widest uppercase border-[3px] border-ink shadow-[2px_2px_0_var(--color-ink)] py-1 rounded-sm">OR CONTINUE WITH</span>
             </div>
 
             <div class="pt-2">
@@ -94,16 +93,16 @@ const onLogin = async () => {
                 block 
                 size="lg"
                 icon="i-heroicons-finger-print"
-                class="bg-[#1c3c6d] text-white hover:bg-[#122b54] font-bold py-3.5 rounded-xl shadow-md transition-all active:scale-[0.98]"
+                class="bg-coral hover:bg-coral-dark text-ink font-bold shadow-[4px_4px_0_var(--color-ink)] border-[3px] border-ink rounded-sm py-4 text-xs tracking-widest uppercase transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--color-ink)]"
               >
                 Login with ThaiD
               </UButton>
             </div>
 
-            <div class="text-center pt-6 border-t border-slate-100 mt-2">
-              <p class="text-sm text-slate-500 font-medium">
+            <div class="text-center pt-6 border-t-[3px] border-ink mt-2">
+              <p class="text-sm text-ink-soft font-bold">
                 New to MIS? 
-                <NuxtLink to="/register" class="text-blue-600 font-bold hover:text-blue-700 hover:underline ml-1">Create an account</NuxtLink>
+                <NuxtLink to="/register" class="text-ink bg-cream px-2 py-0.5 border-[2px] border-ink shadow-[2px_2px_0_var(--color-ink)] inline-block mt-2 hover:bg-gold transition-colors hover:-translate-y-px">Create an account</NuxtLink>
               </p>
             </div>
           </UForm>
