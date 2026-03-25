@@ -15,7 +15,8 @@ export default defineNuxtConfig({
     authentikBaseUrl: process.env.AUTHENTIK_BASE_URL || 'https://auth.company.com',
     authentikClientId: process.env.AUTHENTIK_CLIENT_ID,
     authentikClientSecret: process.env.AUTHENTIK_CLIENT_SECRET,
-    authentikCallbackUrl: process.env.AUTHENTIK_CALLBACK_URL || 'http://localhost:3000/api/auth/authentik/callback'
+    authentikCallbackUrl: process.env.AUTHENTIK_CALLBACK_URL || 'http://localhost:3000/api/auth/authentik/callback',
+    secondaryDatabaseUrl: process.env.SECONDARY_DATABASE_URL
   },
   future: {
     compatibilityVersion: 4

@@ -5,20 +5,25 @@ definePageMeta({
 
 const { user } = useUserSession();
 const { data: qrcodes } = await useFetch('/api/qrcodes');
+const { data: dashboardStats } = await useFetch('/api/dashboard/stats');
 
-// Mock statistics for the MIS dashboard
 const stats = computed(() => [
-  { label: 'Total Assets', value: qrcodes.value?.length || 0, icon: 'i-heroicons-cube', color: 'text-brand-accent' },
-  { label: 'Active Users', value: '1,284', icon: 'i-heroicons-users', color: 'text-blue-500' },
-  { label: 'System Uptime', value: '99.9%', icon: 'i-heroicons-check-circle', color: 'text-green-500' },
-  { label: 'Security Score', value: 'A+', icon: 'i-heroicons-shield-check', color: 'text-brand-accent' }
+  { label: 'Total Assets', value: dashboardStats.value?.totalAssets ?? (qrcodes.value?.length || 0), icon: 'i-heroicons-cube' },
+  { label: 'Active Users', value: dashboardStats.value?.activeUsers ?? '0', icon: 'i-heroicons-users' },
+  { label: 'System Uptime', value: dashboardStats.value?.systemUptime ?? '99.9%', icon: 'i-heroicons-check-circle' },
+  { label: 'Security Score', value: dashboardStats.value?.securityScore ?? 'A+', icon: 'i-heroicons-shield-check' }
 ]);
 
-const recentActivities = [
-  { id: 1, user: 'System', action: 'Database Backup', time: '2 hours ago', status: 'Completed' },
-  { id: 2, user: 'Admin', action: 'User Permissions Updated', time: '5 hours ago', status: 'Pending' },
-  { id: 3, user: 'Bot', action: 'Security Audit', time: '1 day ago', status: 'Completed' }
-];
+const recentActivities = computed(() => {
+  if (dashboardStats.value?.recentActivity && dashboardStats.value.recentActivity.length > 0) {
+    return dashboardStats.value.recentActivity;
+  }
+  return [
+    { id: 1, user: 'System', action: 'Database Backup', time: '2 hours ago', status: 'Completed' },
+    { id: 2, user: 'Admin', action: 'User Permissions Updated', time: '5 hours ago', status: 'Pending' },
+    { id: 3, user: 'Bot', action: 'Security Audit', time: '1 day ago', status: 'Completed' }
+  ];
+});
 </script>
 
 <template>
