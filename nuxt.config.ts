@@ -20,5 +20,10 @@ export default defineNuxtConfig({
   },
   future: {
     compatibilityVersion: 4
+  },
+  vite: {
+    server: {
+      allowedHosts: ['mis.bangkhan.com']
+    }
   }
 })

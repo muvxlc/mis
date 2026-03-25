@@ -15,7 +15,7 @@ export function useExternalDb() {
     
     const pool = mysql.createPool(dbUrl);
     // Bind Drizzle ORM to the secondary raw MariaDB pool
-    _externalDb = drizzle(pool);
+    _externalDb = drizzle(pool as any);
   }
   
   return _externalDb;
