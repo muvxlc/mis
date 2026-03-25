@@ -86,8 +86,11 @@ const recentActivities = computed(() => {
              No active users found.
            </div>
         </div>
-        <div class="bg-cream border-t-[4px] border-ink p-4 text-center">
+        <div class="bg-cream border-t-[4px] border-ink p-4 flex flex-col items-center gap-4">
            <p class="text-[10px] uppercase tracking-widest font-bold text-ink-soft">Displaying {{ onlineUsers?.length || 0 }} logged-in users</p>
+           <UButton class="w-full bg-ink text-warm-white font-bold hover:bg-gold hover:text-ink border-[2px] border-ink transition-all uppercase tracking-widest text-xs py-3" @click="isOnlineUsersModalOpen = false">
+             Close Details
+           </UButton>
         </div>
       </div>
     </UModal>
