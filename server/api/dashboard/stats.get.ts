@@ -1,22 +1,21 @@
 import { sql } from 'drizzle-orm';
-import { useExternalDb } from '../../utils/externalDb';
+import { useHosxpDb } from '../../utils/hosxpDb';
 
 export default defineEventHandler(async (event) => {
   // Check auth session
   const session = await requireUserSession(event);
   
   try {
-    // Get the secondary Drizzle instance
-    const externalDb = useExternalDb();
+    // Get the HOSxP Drizzle instance
+    const hosxpDb = useHosxpDb();
 
-    // Use Drizzle's sql`` template for raw queries on the external database
-    // (Or import and use external schema tables if you generate them)
-    const metrics: any = await externalDb.execute(sql`SELECT 1 as connected`);
+    // Use Drizzle's sql`` template for raw queries on the HOSxP database
+    const metrics: any = await hosxpDb.execute(sql`SELECT 1 as connected`);
     
     const isConnected = Array.isArray(metrics[0]) ? metrics[0].length > 0 : !!metrics;
 
-    // Example of executing a real query using Drizzle:
-    // const result = await externalDb.execute(sql`SELECT COUNT(*) as total FROM tb_users`);
+    // Example:
+    // const result = await hosxpDb.execute(sql`SELECT COUNT(*) as total FROM patient`);
     // const activeUsers = result[0][0].total;
 
     return {
