@@ -86,7 +86,7 @@ const onLogin = async () => {
               <span class="absolute bg-warm-white px-4 text-[11px] text-ink font-black tracking-widest uppercase border-[3px] border-ink shadow-[2px_2px_0_var(--color-ink)] py-1 rounded-sm">OR CONTINUE WITH</span>
             </div>
 
-            <div class="pt-2">
+            <div class="pt-2 flex flex-col gap-4">
               <UButton 
                 to="/api/auth/thaid"
                 external
@@ -96,6 +96,18 @@ const onLogin = async () => {
               >
                 <img src="/thaid.png" alt="ThaiD Logo" class="w-6 h-6 shrink-0 rounded-[4px] border border-ink shadow-[1px_1px_0_var(--color-ink)] object-cover bg-white" />
                 <span>Login with ThaiD</span>
+              </UButton>
+
+              <UButton 
+                to="/api/auth/authentik"
+                external
+                block 
+                size="lg"
+                class="bg-gold hover:bg-gold-light text-ink font-bold shadow-[4px_4px_0_var(--color-ink)] border-[3px] border-ink rounded-sm py-3.5 text-xs tracking-widest uppercase transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--color-ink)]"
+              >
+                <!-- Tell the user to add an authentik.png icon if they want -->
+                <UIcon name="i-heroicons-shield-exclamation" class="w-6 h-6 shrink-0 text-ink" />
+                <span>Login with Authentik</span>
               </UButton>
             </div>
 
