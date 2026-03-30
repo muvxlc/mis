@@ -72,6 +72,10 @@ const logout = async () => {
               <UIcon name="i-heroicons-document-arrow-down" class="w-5 h-5 flex-shrink-0" />
               แปลงไฟล์ PDF
             </NuxtLink>
+            <NuxtLink to="/miscellaneous/asr" class="flex items-center gap-3 px-3 py-2.5 rounded-sm text-sm font-bold text-ink hover:bg-gold/20 transition-all border-[3px] border-transparent hover:border-ink hover:shadow-[2px_2px_0_var(--color-ink)] hover:-translate-y-px" active-class="bg-gold border-ink shadow-[2px_2px_0_var(--color-ink)] text-ink hover:shadow-[2px_2px_0_var(--color-ink)]">
+              <UIcon name="i-heroicons-microphone" class="w-5 h-5 flex-shrink-0" />
+              ถอดเสียงประชุม
+            </NuxtLink>
           </nav>
 
 
