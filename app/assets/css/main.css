@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 @import "@nuxt/ui";
 
@@ -17,10 +18,10 @@
   --color-sage: #8fae8f;
   
   /* Fonts */
-  --font-display: "DM Serif Display", serif;
-  --font-body: "DM Sans", sans-serif;
-  --font-sans: "DM Sans", sans-serif;
-  --font-serif: "DM Serif Display", serif;
+  --font-display: "IBM Plex Sans Thai", sans-serif;
+  --font-body: "IBM Plex Sans Thai", sans-serif;
+  --font-sans: "IBM Plex Sans Thai", sans-serif;
+  --font-serif: "IBM Plex Sans Thai", sans-serif;
   
   /* Shadows */
   --shadow-sharp: 8px 8px 0 var(--color-ink);
