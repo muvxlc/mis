@@ -179,8 +179,8 @@ const onDelete = async (userId: number) => {
                          {{ user.name?.[0] || user.email?.[0] || 'U' }}
                       </div>
                       <div class="flex flex-col">
-                         <span class="font-bold text-ink text-sm">{{ user.name || user.email.split('@')[0] }}</span>
-                         <span class="font-bold text-ink-soft text-[11px]">{{ user.email }}</span>
+                         <span class="font-bold text-ink text-sm">{{ user.name || (user.email ? user.email.split('@')[0] : 'Member') }}</span>
+                         <span class="font-bold text-ink-soft text-[11px]">{{ user.email || 'No email provided' }}</span>
                       </div>
                     </div>
                   </td>

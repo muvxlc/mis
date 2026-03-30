@@ -7,20 +7,21 @@ const toast = useToast();
 const loading = ref(true);
 const rolesState = ref<any[]>([]);
 
-const availablePermissions = [
-  { id: 'dashboard', label: 'Access Dashboard' },
-  { id: 'qrcodes:read', label: 'View Asset Inventory' },
-  { id: 'qrcodes:write', label: 'Create & Edit Assets' },
-  { id: 'qrcodes:delete', label: 'Delete Assets' },
-  { id: 'users:read', label: 'View Personnel' },
-  { id: 'users:write', label: 'Manage Personnel' },
-  { id: 'roles:manage', label: 'Manage Roles & Config' },
-];
+const availablePermissions = ref<any[]>([]);
 
 const loadData = async () => {
     loading.value = true;
     try {
-        const data: any = await $fetch('/api/admin/roles');
+        const [roles, menus]: any = await Promise.all([
+            $fetch('/api/admin/roles'),
+            $fetch('/api/admin/menus')
+        ]);
+        
+        availablePermissions.value = menus.map((m: any) => ({
+            id: m.id,
+            label: m.label,
+            category: m.category
+        }));
         
         rolesState.value = [
             { 
@@ -28,21 +29,21 @@ const loadData = async () => {
                name: 'Super Administrator', 
                description: 'Absolute control over the entire system, security, and infrastructure.', 
                color: 'error',
-               access: data?.find((r: any) => r.role === 'superadmin')?.permissions || availablePermissions.map(p => p.id)
+               access: roles?.find((r: any) => r.role === 'superadmin')?.permissions || availablePermissions.value.map((p: any) => p.id)
             },
             { 
                id: 'admin', 
                name: 'Administrator', 
                description: 'Full system management and configuration control.', 
                color: 'primary',
-               access: data?.find((r: any) => r.role === 'admin')?.permissions || availablePermissions.map(p => p.id)
+               access: roles?.find((r: any) => r.role === 'admin')?.permissions || availablePermissions.value.map((p: any) => p.id)
             },
             {
                id: 'user', 
                name: 'Standard User', 
                description: 'Standard access for asset creation and management.', 
                color: 'neutral',
-               access: data?.find((r: any) => r.role === 'user')?.permissions || ['dashboard', 'qrcodes:read', 'qrcodes:write']
+               access: roles?.find((r: any) => r.role === 'user')?.permissions || ['dashboard']
             }
         ];
     } catch (err) {

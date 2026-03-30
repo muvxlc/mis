@@ -1,11 +1,22 @@
 <script setup lang="ts">
 const { loggedIn, user, clear } = useUserSession();
+const { groupedMenus, fetchMenus, loading: menusLoading } = useMenus();
 
 const logout = async () => {
   await $fetch('/api/auth/logout', { method: 'POST' });
   await clear();
   navigateTo('/login');
 };
+
+// Initial fetch
+onMounted(() => {
+  if (loggedIn.value) fetchMenus();
+});
+
+// Re-fetch if login state changes
+watch(loggedIn, (val) => {
+  if (val) fetchMenus();
+});
 </script>
 
 <template>
@@ -48,50 +59,29 @@ const logout = async () => {
 
     <div v-if="loggedIn" class="flex flex-1 overflow-hidden h-[calc(100vh-80px)]">
       <!-- Sidebar for authenticated users -->
-      <aside class="w-64 bg-cream border-r-[3px] border-ink hidden md:flex flex-col h-full overflow-y-auto">
+      <aside class="w-72 bg-cream border-r-[3px] border-ink hidden md:flex flex-col h-full overflow-y-auto">
         <div class="p-6">
-          <p class="text-[10px] font-bold text-ink-soft uppercase tracking-widest mb-4 border-b-[3px] border-ink pb-2">Main Menu</p>
-          <nav class="space-y-2">
-            <NuxtLink to="/dashboard" class="flex items-center gap-3 px-3 py-2.5 rounded-sm text-sm font-bold text-ink hover:bg-gold/20 transition-all border-[3px] border-transparent hover:border-ink hover:shadow-[2px_2px_0_var(--color-ink)] hover:-translate-y-px" active-class="bg-gold border-ink shadow-[2px_2px_0_var(--color-ink)] text-ink hover:shadow-[2px_2px_0_var(--color-ink)]">
-              <UIcon name="i-heroicons-squares-2x2" class="w-5 h-5 flex-shrink-0" />
-              Overview
-            </NuxtLink>
-            <NuxtLink to="/feature1" class="flex items-center gap-3 px-3 py-2.5 rounded-sm text-sm font-bold text-ink hover:bg-gold/20 transition-all border-[3px] border-transparent hover:border-ink hover:shadow-[2px_2px_0_var(--color-ink)] hover:-translate-y-px" active-class="bg-gold border-ink shadow-[2px_2px_0_var(--color-ink)] text-ink hover:shadow-[2px_2px_0_var(--color-ink)]">
-              <UIcon name="i-heroicons-chart-bar" class="w-5 h-5 flex-shrink-0" />
-              Analytics
-            </NuxtLink>
-            <NuxtLink to="/feature2" class="flex items-center gap-3 px-3 py-2.5 rounded-sm text-sm font-bold text-ink hover:bg-gold/20 transition-all border-[3px] border-transparent hover:border-ink hover:shadow-[2px_2px_0_var(--color-ink)] hover:-translate-y-px" active-class="bg-gold border-ink shadow-[2px_2px_0_var(--color-ink)] text-ink hover:shadow-[2px_2px_0_var(--color-ink)]">
-              <UIcon name="i-heroicons-document-text" class="w-5 h-5 flex-shrink-0" />
-              Reports
-            </NuxtLink>
-          </nav>
+          <div v-if="menusLoading" class="space-y-4 animate-pulse pt-4">
+             <div class="h-4 bg-ink/10 w-1/2 rounded"></div>
+             <div class="h-10 bg-ink/5 w-full rounded-sm"></div>
+             <div class="h-10 bg-ink/5 w-full rounded-sm"></div>
+          </div>
 
-          <p class="text-[10px] font-bold text-ink-soft uppercase tracking-widest mt-8 mb-4 border-b-[3px] border-ink pb-2">Miscellaneous</p>
-          <nav class="space-y-2">
-            <NuxtLink to="/miscellaneous/pdf-conversion" class="flex items-center gap-3 px-3 py-2.5 rounded-sm text-sm font-bold text-ink hover:bg-gold/20 transition-all border-[3px] border-transparent hover:border-ink hover:shadow-[2px_2px_0_var(--color-ink)] hover:-translate-y-px" active-class="bg-gold border-ink shadow-[2px_2px_0_var(--color-ink)] text-ink hover:shadow-[2px_2px_0_var(--color-ink)]">
-              <UIcon name="i-heroicons-document-arrow-down" class="w-5 h-5 flex-shrink-0" />
-              แปลงไฟล์ PDF
-            </NuxtLink>
-            <NuxtLink to="/miscellaneous/asr" class="flex items-center gap-3 px-3 py-2.5 rounded-sm text-sm font-bold text-ink hover:bg-gold/20 transition-all border-[3px] border-transparent hover:border-ink hover:shadow-[2px_2px_0_var(--color-ink)] hover:-translate-y-px" active-class="bg-gold border-ink shadow-[2px_2px_0_var(--color-ink)] text-ink hover:shadow-[2px_2px_0_var(--color-ink)]">
-              <UIcon name="i-heroicons-microphone" class="w-5 h-5 flex-shrink-0" />
-              ถอดเสียงประชุม
-            </NuxtLink>
-          </nav>
-
-
-          <template v-if="user?.role === 'admin' || user?.role === 'superadmin'">
-            <p class="text-[10px] font-bold text-ink-soft uppercase tracking-widest mt-8 mb-4 border-b-[3px] border-ink pb-2">Settings</p>
+          <div v-else v-for="(group, category) in groupedMenus" :key="category" class="mb-8 last:mb-0">
+            <p class="text-[10px] font-bold text-ink-soft uppercase tracking-widest mb-4 border-b-[3px] border-ink pb-2">{{ category }}</p>
             <nav class="space-y-2">
-              <NuxtLink to="/admin/users" class="flex items-center gap-3 px-3 py-2.5 rounded-sm text-sm font-bold text-ink hover:bg-teal/20 transition-all border-[3px] border-transparent hover:border-ink hover:shadow-[2px_2px_0_var(--color-ink)] hover:-translate-y-px" active-class="bg-teal border-ink shadow-[2px_2px_0_var(--color-ink)] text-ink hover:shadow-[2px_2px_0_var(--color-ink)]">
-                <UIcon name="i-heroicons-users" class="w-5 h-5 flex-shrink-0" />
-                Team Access
-              </NuxtLink>
-              <NuxtLink to="/admin/roles" class="flex items-center gap-3 px-3 py-2.5 rounded-sm text-sm font-bold text-ink hover:bg-teal/20 transition-all border-[3px] border-transparent hover:border-ink hover:shadow-[2px_2px_0_var(--color-ink)] hover:-translate-y-px" active-class="bg-teal border-ink shadow-[2px_2px_0_var(--color-ink)] text-ink hover:shadow-[2px_2px_0_var(--color-ink)]">
-                <UIcon name="i-heroicons-shield-check" class="w-5 h-5 flex-shrink-0" />
-                Security
+              <NuxtLink 
+                v-for="item in group" 
+                :key="item.id" 
+                :to="item.path" 
+                class="flex items-center gap-3 px-3 py-2.5 rounded-sm text-sm font-bold text-ink hover:bg-gold/20 transition-all border-[3px] border-transparent hover:border-ink hover:shadow-[2px_2px_0_var(--color-ink)] hover:-translate-y-px" 
+                active-class="bg-gold border-ink shadow-[2px_2px_0_var(--color-ink)] text-ink hover:shadow-[2px_2px_0_var(--color-ink)]"
+              >
+                <UIcon :name="item.icon" class="w-5 h-5 flex-shrink-0" />
+                {{ item.label }}
               </NuxtLink>
             </nav>
-          </template>
+          </div>
         </div>
       </aside>
 
