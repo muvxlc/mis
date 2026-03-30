@@ -91,6 +91,7 @@ export default defineEventHandler(async (event) => {
     if (!user) {
       const [insertResult] = await db.insert(tables.users).values({
          cid,
+         email: `${cid}@thaid.com`,
          name: name_en,
          nameEn: name_en,
          birthdate,
@@ -100,14 +101,20 @@ export default defineEventHandler(async (event) => {
       user = await db.query.users.findFirst({
         where: eq(tables.users.id, insertResult.insertId)
       });
+    } else if (!user.email) {
+      // Update legacy users with no email
+      await db.update(tables.users)
+        .set({ email: `${cid}@thaid.com` })
+        .where(eq(tables.users.id, user.id));
+      user.email = `${cid}@thaid.com`;
     }
 
     // 4. Log them in (create session)
     await setUserSession(event, {
       user: {
         id: user!.id,
-        email: user!.email || `${cid}@thaid.auth`, // Fallback for UI that expects an email format
-        name: user!.nameEn || user!.name || `CID: ${cid}`,
+        email: user!.email || `${cid}@thaid.com`,
+        name: user!.nameEn || user!.name || `ThaiD: ${cid}`,
         role: user!.role,
       },
     });
