@@ -110,6 +110,23 @@ const getProgressBarWidth = (sec: number | string | null, max: number = 30) => {
     <!-- Summary Metrics Grid - Version 1 Style -->
     <div v-if="stats" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       
+      <!-- เวลารวมทั้งหมด (Now First) -->
+      <div class="bg-ink border-[3px] border-ink p-6 shadow-[8px_8px_0_var(--color-gold)] flex flex-col gap-4 lg:col-span-2 order-first">
+        <div>
+           <span class="text-sm uppercase font-black bg-gold text-ink px-2 py-0.5 tracking-widest italic rounded-sm shadow-[2px_2px_0_var(--color-ink)]">เวลารวมทั้งหมด (Total Journey Time)</span>
+        </div>
+        <div class="flex items-baseline justify-between py-2">
+           <div class="flex items-baseline gap-3">
+              <span class="text-6xl font-display font-black text-warm-white italic leading-none">{{ formatMmSs(stats.total_all) }}</span>
+              <span class="text-xl font-black text-gold italic uppercase">นาที</span>
+           </div>
+           <span class="text-xl font-display font-black text-gold italic leading-none">MM:SS</span>
+        </div>
+        <div class="h-3 bg-warm-white/10 border-[2px] border-gold rounded-none overflow-hidden mt-2">
+          <div class="h-full bg-gold transition-all duration-1000 shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)]" :style="{ width: getProgressBarWidth(stats.m_total_all, 120) }"></div>
+        </div>
+      </div>
+
       <!-- 1. รอซักประวัติ -->
       <div class="bg-warm-white border-[3px] border-ink p-6 shadow-[8px_8px_0_var(--color-ink)] flex flex-col gap-4">
         <div>
@@ -141,7 +158,7 @@ const getProgressBarWidth = (sec: number | string | null, max: number = 30) => {
       <!-- 3. รอตรวจ 1 -->
       <div class="bg-warm-white border-[3px] border-ink p-6 shadow-[8px_8px_0_var(--color-ink)] flex flex-col gap-4">
         <div>
-           <span class="text-sm uppercase font-black bg-ink text-warm-white px-2 py-0.5 tracking-widest italic rounded-sm shadow-[2px_2px_0_var(--color-gold)]">3. รอตรวจ 1</span>
+           <span class="text-sm uppercase font-black bg-ink text-warm-white px-2 py-0.5 tracking-widest italic rounded-sm shadow-[2px_2px_0_var(--color-gold)]">3. รอตรวจ</span>
         </div>
         <div class="flex items-baseline gap-2">
            <span class="text-4xl font-display font-black text-ink italic leading-tight">{{ formatMmSs(stats.รอตรวจ1) }}</span>
@@ -152,8 +169,8 @@ const getProgressBarWidth = (sec: number | string | null, max: number = 30) => {
         </div>
       </div>
 
-      <!-- 4. รอตรวจ 2 -->
-      <div class="bg-warm-white border-[3px] border-ink p-6 shadow-[8px_8px_0_var(--color-ink)] flex flex-col gap-4">
+      <!-- 4. รอตรวจ 2 (Hidden for focused analysis) -->
+      <!-- <div class="bg-warm-white border-[3px] border-ink p-6 shadow-[8px_8px_0_var(--color-ink)] flex flex-col gap-4">
         <div>
            <span class="text-sm uppercase font-black bg-ink text-warm-white px-2 py-0.5 tracking-widest italic rounded-sm shadow-[2px_2px_0_var(--color-coral)]">4. รอตรวจ 2</span>
         </div>
@@ -164,12 +181,12 @@ const getProgressBarWidth = (sec: number | string | null, max: number = 30) => {
         <div class="h-2 bg-cream border-[2px] border-ink rounded-none overflow-hidden">
           <div class="h-full bg-coral transition-all duration-1000" :style="{ width: getProgressBarWidth(stats.m_wait_doc2, 60) }"></div>
         </div>
-      </div>
+      </div> -->
 
       <!-- 5. แพทย์ตรวจ -->
       <div class="bg-warm-white border-[3px] border-ink p-6 shadow-[8px_8px_0_var(--color-ink)] flex flex-col gap-4">
         <div>
-           <span class="text-sm uppercase font-black bg-ink text-warm-white px-2 py-0.5 tracking-widest italic rounded-sm" style="box-shadow: 2px 2px 0 #10b981">5. แพทย์ตรวจ</span>
+           <span class="text-sm uppercase font-black bg-ink text-warm-white px-2 py-0.5 tracking-widest italic rounded-sm" style="box-shadow: 2px 2px 0 #10b981">4. แพทย์ตรวจ</span>
         </div>
         <div class="flex items-baseline gap-2">
            <span class="text-4xl font-display font-black text-ink italic leading-tight">{{ formatMmSs(stats.แพทย์ตรวจ) }}</span>
@@ -183,7 +200,7 @@ const getProgressBarWidth = (sec: number | string | null, max: number = 30) => {
       <!-- 6. รอรับยา -->
       <div class="bg-warm-white border-[3px] border-ink p-6 shadow-[8px_8px_0_var(--color-ink)] flex flex-col gap-4">
         <div>
-           <span class="text-sm uppercase font-black bg-ink text-warm-white px-2 py-0.5 tracking-widest italic rounded-sm" style="box-shadow: 2px 2px 0 #f59e0b">6. รอรับยา</span>
+           <span class="text-sm uppercase font-black bg-ink text-warm-white px-2 py-0.5 tracking-widest italic rounded-sm" style="box-shadow: 2px 2px 0 #f59e0b">5. รอรับยา</span>
         </div>
         <div class="flex items-baseline gap-2">
            <span class="text-4xl font-display font-black text-ink italic leading-tight">{{ formatMmSs(stats.รอรับยา) }}</span>
@@ -191,23 +208,6 @@ const getProgressBarWidth = (sec: number | string | null, max: number = 30) => {
         </div>
         <div class="h-2 bg-cream border-[2px] border-ink rounded-none overflow-hidden">
           <div class="h-full transition-all duration-1000" style="background-color: #f59e0b" :style="{ width: getProgressBarWidth(stats.m_wait_rx, 30) }"></div>
-        </div>
-      </div>
-
-      <!-- เวลารวมทั้งหมด -->
-      <div class="bg-ink border-[3px] border-ink p-6 shadow-[8px_8px_0_var(--color-gold)] flex flex-col gap-4 lg:col-span-2">
-        <div>
-           <span class="text-sm uppercase font-black bg-gold text-ink px-2 py-0.5 tracking-widest italic rounded-sm shadow-[2px_2px_0_var(--color-ink)]">เวลารวมทั้งหมด (Total Journey Time)</span>
-        </div>
-        <div class="flex items-baseline justify-between py-2">
-           <div class="flex items-baseline gap-3">
-              <span class="text-6xl font-display font-black text-warm-white italic leading-none">{{ formatMmSs(stats.total_all) }}</span>
-              <span class="text-xl font-black text-gold italic uppercase">นาที</span>
-           </div>
-           <span class="text-xl font-display font-black text-gold italic leading-none">MM:SS</span>
-        </div>
-        <div class="h-3 bg-warm-white/10 border-[2px] border-gold rounded-none overflow-hidden mt-2">
-          <div class="h-full bg-gold transition-all duration-1000 shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)]" :style="{ width: getProgressBarWidth(stats.m_total_all, 120) }"></div>
         </div>
       </div>
 
@@ -237,39 +237,37 @@ const getProgressBarWidth = (sec: number | string | null, max: number = 30) => {
                       { val: stats.m_doc_time, color: '#10b981', label: 'ตรวจ' },
                       { val: stats.m_wait_rx, color: '#f59e0b', label: 'ยา/บริการ' }
                    ]" :key="i" :style="{ width: (step.val / stats.m_total_all * 100) + '%', backgroundColor: step.color }" :title="step.label" class="h-full border-r-[2px] border-ink last:border-r-0 hover:brightness-110 transition-all cursor-help relative group">
-                      <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-white/20 pointer-events-none">
-                         <span class="text-[8px] font-black text-ink bg-warm-white/90 px-1">{{ Math.round(step.val / stats.m_total_all * 100) }}%</span>
+                      <div class="absolute inset-0 flex items-center justify-center bg-white/10 pointer-events-none">
+                         <span class="text-[10px] font-black text-ink bg-warm-white/90 px-1 shadow-sm">{{ Math.round(step.val / stats.m_total_all * 100) }}%</span>
                       </div>
                    </div>
                 </div>
              </div>
-
-             <!-- Bar 2: Cumulative Wait Comparison (รอตรวจ 2 Focus) -->
-             <div class="space-y-2">
+             
+             <!-- Bar 2: Cumulative Wait Comparison (Hidden) -->
+             <!-- <div class="space-y-2">
                 <div class="flex justify-between items-end px-1">
                    <span class="text-[10px] font-black text-ink uppercase tracking-widest italic text-coral">2. Passenger Perspective (Wait for Doctor 2)</span>
                    <span class="text-[9px] font-black text-coral uppercase">{{ formatMmSs(stats.รอตรวจ2) }}</span>
                 </div>
                 <div class="flex h-10 border-[3px] border-ink bg-cream rounded-none overflow-hidden shadow-[inset_2px_2px_4px_rgba(0,0,0,0.1)]">
-                   <!-- Wait Doctor 2 Segment -->
                    <div class="h-full border-r-[2px] border-ink bg-coral flex items-center justify-center group relative cursor-help" :style="{ width: (stats.m_wait_doc2 / stats.m_total_all * 100) + '%' }">
                       <span class="text-[10px] font-black italic text-warm-white shadow-sm opacity-60 group-hover:opacity-100">WAIT DOC 2 ({{ Math.round(stats.m_wait_doc2 / stats.m_total_all * 100) }}%)</span>
                    </div>
-                   <!-- The rest of the journey -->
                    <div class="h-full bg-ink opacity-10 flex items-center justify-center" :style="{ width: ((stats.m_total_all - stats.m_wait_doc2) / stats.m_total_all * 100) + '%' }">
                       <span class="text-[9px] font-bold text-ink-soft italic">POST-WAIT JOURNEY</span>
                    </div>
                 </div>
-             </div>
+             </div> -->
              
              <!-- Legend -->
              <div class="flex flex-wrap gap-4 text-[8px] font-black uppercase tracking-widest text-ink/60 italic pt-2 border-t-[2px] border-ink/5">
-                <div class="flex items-center gap-1.5"><div class="w-2.5 h-2.5 border-[1px] border-ink" style="background-color: #2dd4bf"></div> รอซักประวัติ</div>
-                <div class="flex items-center gap-1.5"><div class="w-2.5 h-2.5 border-[1px] border-ink" style="background-color: #6366f1"></div> ซักประวัติ</div>
-                <div class="flex items-center gap-1.5"><div class="w-2.5 h-2.5 border-[1px] border-ink" style="background-color: #fbbf24"></div> รอตรวจ 1</div>
-                <div class="flex items-center gap-1.5"><div class="w-2.5 h-2.5 border-[1px] border-ink bg-coral"></div> รอตรวจ 2 (ภาพรวม)</div>
-                <div class="flex items-center gap-1.5"><div class="w-2.5 h-2.5 border-[1px] border-ink" style="background-color: #10b981"></div> แพทย์ตรวจ</div>
-                <div class="flex items-center gap-1.5"><div class="w-2.5 h-2.5 border-[1px] border-ink" style="background-color: #f59e0b"></div> รอรับยา/บริการ</div>
+                <div class="flex items-center gap-1.5 text-xs"><div class="w-2.5 h-2.5 border-[1px] border-ink" style="background-color: #2dd4bf"></div> รอซักประวัติ</div>
+                <div class="flex items-center gap-1.5 text-xs"><div class="w-2.5 h-2.5 border-[1px] border-ink" style="background-color: #6366f1"></div> ซักประวัติ</div>
+                <div class="flex items-center gap-1.5 text-xs"><div class="w-2.5 h-2.5 border-[1px] border-ink" style="background-color: #fbbf24"></div> รอตรวจ</div>
+                <!-- <div class="flex items-center gap-1.5"><div class="w-2.5 h-2.5 border-[1px] border-ink bg-coral"></div> รอตรวจ 2 (ภาพรวม)</div> -->
+                <div class="flex items-center gap-1.5 text-xs"><div class="w-2.5 h-2.5 border-[1px] border-ink" style="background-color: #10b981"></div> แพทย์ตรวจ</div>
+                <div class="flex items-center gap-1.5 text-xs"><div class="w-2.5 h-2.5 border-[1px] border-ink" style="background-color: #f59e0b"></div> รอรับยา</div>
              </div>
           </div>
        </div>
