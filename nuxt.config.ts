@@ -11,9 +11,19 @@ export default defineNuxtConfig({
     databaseUrl: process.env.DATABASE_URL,
     thaidClientId: process.env.THAID_CLIENT_ID,
     thaidClientSecret: process.env.THAID_CLIENT_SECRET,
-    thaidCallbackUrl: process.env.THAID_CALLBACK_URL || 'http://localhost:3000/api/auth/thaid/callback'
+    thaidCallbackUrl: process.env.THAID_CALLBACK_URL || 'http://localhost:3000/api/auth/thaid/callback',
+    authentikBaseUrl: process.env.AUTHENTIK_BASE_URL || 'https://auth.company.com',
+    authentikClientId: process.env.AUTHENTIK_CLIENT_ID,
+    authentikClientSecret: process.env.AUTHENTIK_CLIENT_SECRET,
+    authentikCallbackUrl: process.env.AUTHENTIK_CALLBACK_URL || 'http://localhost:3000/api/auth/authentik/callback',
+    hosxpDatabaseUrl: process.env.HOSXP_DATABASE_URL
   },
   future: {
     compatibilityVersion: 4
+  },
+  vite: {
+    server: {
+      allowedHosts: ['mis.bangkhan.com']
+    }
   }
 })

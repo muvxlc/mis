@@ -34,21 +34,15 @@ const onLogin = async () => {
 <template>
   <div class="min-h-[80vh] flex items-center justify-center px-6">
     <div class="w-full max-w-md">
-      <div class="mac-window">
-        <div class="mac-title-bar">
-          <div class="mac-dot mac-dot-red" />
-          <div class="mac-dot mac-dot-yellow" />
-          <div class="mac-dot mac-dot-green" />
-        </div>
-        
-        <div class="p-10 space-y-8 bg-white">
-          <div class="text-center space-y-2">
-            <h2 class="text-3xl font-serif text-brand-primary">Welcome Back</h2>
-            <p class="text-slate-500 text-sm font-sans">Enter your credentials to access your dashboard</p>
+      <div class="bg-warm-white rounded-sm shadow-[8px_8px_0_var(--color-ink)] border-[3px] border-ink overflow-hidden border-t-[8px] border-t-teal">
+        <div class="p-10 space-y-8 relative z-10">
+          <div class="text-center space-y-4">
+            <h2 class="text-4xl font-display font-bold text-ink tracking-tight drop-shadow-sm">Welcome Back</h2>
+            <p class="text-ink text-sm font-bold bg-cream inline-block px-3 py-1 border-[2px] border-ink shadow-[2px_2px_0_var(--color-ink)] rounded-sm">Enter your credentials to access your dashboard</p>
           </div>
 
-          <UForm :state="state" class="space-y-6" @submit="onLogin">
-            <UFormField label="Email Address or Citizen ID" name="identifier" class="font-sans">
+          <UForm :state="state" class="space-y-6 font-bold text-ink [&_label]:text-ink [&_label]:font-bold [&_label]:text-sm [&_label]:tracking-wide [&_label]:mb-1.5" @submit="onLogin">
+            <UFormField label="Email Address or Citizen ID" name="identifier">
               <UInput 
                 v-model="state.identifier" 
                 placeholder="name@company.com or 1100..." 
@@ -56,13 +50,12 @@ const onLogin = async () => {
                 size="lg"
                 class="w-full"
                 :ui="{ 
-                  base: 'bg-white border-slate-200 shadow-sm focus:ring-brand-accent focus:border-brand-accent',
-                  rounded: 'rounded-lg'
+                  base: 'shadow-[2px_2px_0_var(--color-ink)] border-[2px] border-ink rounded-sm bg-white font-bold text-ink placeholder:text-ink-soft'
                 }"
               />
             </UFormField>
             
-            <UFormField label="Password" name="password" class="font-sans">
+            <UFormField label="Access Key (Password)" name="password">
               <UInput 
                 v-model="state.password" 
                 type="password" 
@@ -71,46 +64,57 @@ const onLogin = async () => {
                 size="lg"
                 class="w-full"
                 :ui="{ 
-                  base: 'bg-white border-slate-200 shadow-sm focus:ring-brand-accent focus:border-brand-accent',
-                  rounded: 'rounded-lg'
+                  base: 'shadow-[2px_2px_0_var(--color-ink)] border-[2px] border-ink rounded-sm bg-white font-bold text-ink placeholder:text-ink-soft'
                 }"
               />
             </UFormField>
 
-            <div class="pt-2">
+            <div class="pt-4">
               <UButton 
                 type="submit" 
                 block 
                 size="lg"
                 :loading="loading"
-                class="bg-brand-primary text-white hover:bg-slate-800 font-bold py-3 rounded-lg shadow-md transition-all active:scale-[0.98]"
+                class="bg-teal hover:bg-teal-dark text-ink font-bold shadow-[4px_4px_0_var(--color-ink)] border-[3px] border-ink rounded-sm py-4 text-xs tracking-widest uppercase transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--color-ink)]"
               >
                 Sign In to MIS
               </UButton>
             </div>
 
             <div class="relative flex items-center justify-center pt-2">
-              <div class="w-full h-px bg-slate-200"></div>
-              <span class="absolute bg-white px-3 text-[10px] text-slate-400 font-bold tracking-widest uppercase">OR CONTINUE WITH</span>
+              <div class="w-full h-[3px] bg-ink"></div>
+              <span class="absolute bg-warm-white px-4 text-[11px] text-ink font-black tracking-widest uppercase border-[3px] border-ink shadow-[2px_2px_0_var(--color-ink)] py-1 rounded-sm">OR CONTINUE WITH</span>
             </div>
 
-            <div>
+            <div class="pt-2 flex flex-col gap-4">
               <UButton 
                 to="/api/auth/thaid"
                 external
                 block 
                 size="lg"
-                icon="i-heroicons-finger-print"
-                class="bg-[#1c3c6d] text-white hover:bg-[#122b54] font-bold py-3 rounded-lg shadow-md transition-all active:scale-[0.98]"
+                class="bg-coral hover:bg-coral-dark text-ink font-bold shadow-[4px_4px_0_var(--color-ink)] border-[3px] border-ink rounded-sm py-3.5 text-xs tracking-widest uppercase transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--color-ink)]"
               >
-                Login with ThaiD
+                <img src="/thaid.png" alt="ThaiD Logo" class="w-6 h-6 shrink-0 rounded-[4px] border border-ink shadow-[1px_1px_0_var(--color-ink)] object-cover bg-white" />
+                <span>Login with ThaiD</span>
+              </UButton>
+
+              <UButton 
+                to="/api/auth/authentik"
+                external
+                block 
+                size="lg"
+                class="bg-gold hover:bg-gold-light text-ink font-bold shadow-[4px_4px_0_var(--color-ink)] border-[3px] border-ink rounded-sm py-3.5 text-xs tracking-widest uppercase transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--color-ink)]"
+              >
+                <!-- Tell the user to add an authentik.png icon if they want -->
+                <UIcon name="i-heroicons-shield-exclamation" class="w-6 h-6 shrink-0 text-ink" />
+                <span>Login with Authentik</span>
               </UButton>
             </div>
 
-            <div class="text-center pt-4 border-t border-slate-100">
-              <p class="text-sm text-slate-500">
+            <div class="text-center pt-6 border-t-[3px] border-ink mt-2">
+              <p class="text-sm text-ink-soft font-bold">
                 New to MIS? 
-                <NuxtLink to="/register" class="text-brand-accent font-bold hover:underline ml-1">Create an account</NuxtLink>
+                <NuxtLink to="/register" class="text-ink bg-cream px-2 py-0.5 border-[2px] border-ink shadow-[2px_2px_0_var(--color-ink)] inline-block mt-2 hover:bg-gold transition-colors hover:-translate-y-px">Create an account</NuxtLink>
               </p>
             </div>
           </UForm>

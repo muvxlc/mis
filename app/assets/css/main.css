@@ -2,46 +2,119 @@
 @import "@nuxt/ui";
 
 @theme {
-  /* Sophisticated Color Palette */
-  --color-brand-primary: #061e26; /* Deep Teal/Charcoal */
-  --color-brand-accent: #eab308;  /* Yellow-Gold */
-  --color-brand-bg: #f8fafc;      /* Soft White/Slate-50 */
+  /* Colors */
+  --color-ink: #1a1a2e;
+  --color-ink-soft: #2d2d44;
+  --color-cream: #faf8f5;
+  --color-warm-white: #fffef9;
+  --color-coral: #ff6b5b;
+  --color-coral-dark: #e85a4a;
+  --color-coral-light: #ff8577;
+  --color-gold: #8a6d19;
+  --color-gold-light: #c9a227;
+  --color-teal: #2d9c96;
+  --color-teal-dark: #247a75;
+  --color-sage: #8fae8f;
   
-  /* Typography */
-  --font-serif: "Playfair Display", "Times New Roman", serif;
-  --font-sans: "Geist", "Inter", sans-serif;
+  /* Fonts */
+  --font-display: "DM Serif Display", serif;
+  --font-body: "DM Sans", sans-serif;
+  --font-sans: "DM Sans", sans-serif;
+  --font-serif: "DM Serif Display", serif;
+  
+  /* Shadows */
+  --shadow-sharp: 8px 8px 0 var(--color-ink);
+  --shadow-soft: 0 20px 60px rgba(26,26,46,0.12);
+  --shadow-glow: 0 0 40px rgba(255,107,91,0.3);
+  --shadow-lifted: 0 30px 80px rgba(26,26,46,0.18);
 }
 
-/* Base Styles */
 @layer base {
   body {
-    @apply font-sans bg-brand-bg text-brand-primary;
+    background-color: var(--color-cream);
+    color: var(--color-ink);
+    font-size: clamp(1rem, 0.9rem + 0.5vw, 1.125rem);
+    line-height: 1.7;
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-feature-settings: "kern" 1, "liga" 1;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-size-adjust: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
   }
   
-  h1, h2, h3, .font-serif {
-    @apply font-serif;
+  h1, h2, h3, h4, h5, h6, .font-display {
+    font-family: var(--font-display);
+    font-weight: 400;
+    line-height: 1.2;
+    margin: 0;
+  }
+  
+  ::selection {
+    background-color: var(--color-teal);
+    color: var(--color-warm-white);
   }
 }
 
-/* Nuxt UI v4 Customization via CSS Variables */
 :root {
-  --ui-primary: var(--color-brand-accent);
-  --ui-bg: white;
+  --ui-primary-50: #eaf5f4;
+  --ui-primary-100: #d5ebe9;
+  --ui-primary-200: #aaddda;
+  --ui-primary-300: #80ceca;
+  --ui-primary-400: #55beba;
+  --ui-primary-500: var(--color-teal);
+  --ui-primary-600: var(--color-teal-dark);
+  --ui-primary-700: #1d625d;
+  --ui-primary-800: #164a46;
+  --ui-primary-900: #0e322f;
+  --ui-primary-950: #071917;
+  
+  --ui-radius: 4px; /* radius-sm */
 }
 
-/* Mac-style Window Mockup */
-.mac-window {
-  @apply rounded-xl shadow-2xl overflow-hidden border border-slate-200 bg-white;
+@layer utilities {
+  .border-thick {
+    border-width: 3px;
+    border-style: solid;
+    border-color: var(--color-ink);
+  }
+  
+  .border-thin {
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--color-ink-soft);
+  }
 }
 
-.mac-title-bar {
-  @apply bg-brand-primary py-3 px-4 flex items-center gap-2;
+/* Browser Mockup Override */
+.browser-mockup {
+  border-radius: 8px; /* radius-md */
+  overflow: hidden;
+  background-color: var(--color-warm-white);
+  border: 3px solid var(--color-ink);
+  box-shadow: var(--shadow-sharp);
+  transition: all 0.3s ease;
 }
 
-.mac-dot {
-  @apply w-3 h-3 rounded-full;
+.browser-header {
+  background-color: var(--color-cream);
+  border-bottom: 3px solid var(--color-ink);
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.mac-dot-red { @apply bg-[#ff5f56]; }
-.mac-dot-yellow { @apply bg-[#ffbd2e]; }
-.mac-dot-green { @apply bg-[#27c93f]; }
+.browser-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 100%;
+  border: 2px solid var(--color-ink);
+}
+.browser-dot-1 { background-color: var(--color-coral); }
+.browser-dot-2 { background-color: var(--color-gold); }
+.browser-dot-3 { background-color: var(--color-teal); }
+
