@@ -66,6 +66,15 @@ const logout = async () => {
             </NuxtLink>
           </nav>
 
+          <p class="text-[10px] font-bold text-ink-soft uppercase tracking-widest mt-8 mb-4 border-b-[3px] border-ink pb-2">Miscellaneous</p>
+          <nav class="space-y-2">
+            <NuxtLink to="/miscellaneous/pdf-conversion" class="flex items-center gap-3 px-3 py-2.5 rounded-sm text-sm font-bold text-ink hover:bg-gold/20 transition-all border-[3px] border-transparent hover:border-ink hover:shadow-[2px_2px_0_var(--color-ink)] hover:-translate-y-px" active-class="bg-gold border-ink shadow-[2px_2px_0_var(--color-ink)] text-ink hover:shadow-[2px_2px_0_var(--color-ink)]">
+              <UIcon name="i-heroicons-document-arrow-down" class="w-5 h-5 flex-shrink-0" />
+              แปลงไฟล์ PDF
+            </NuxtLink>
+          </nav>
+
+
           <template v-if="user?.role === 'admin' || user?.role === 'superadmin'">
             <p class="text-[10px] font-bold text-ink-soft uppercase tracking-widest mt-8 mb-4 border-b-[3px] border-ink pb-2">Settings</p>
             <nav class="space-y-2">
