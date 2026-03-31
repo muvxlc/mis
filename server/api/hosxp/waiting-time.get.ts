@@ -4,11 +4,11 @@ import { useHosxpDb } from '../../utils/hosxpDb';
 export default defineEventHandler(async (event) => {
   // Check auth session
   const session = await requireUserSession(event);
-  
+
   const query = getQuery(event);
   const startDate = query.startDate as string || new Date().toISOString().split('T')[0];
   const endDate = query.endDate as string || new Date().toISOString().split('T')[0];
-  
+
   const dateTimeStart = `${startDate} 08:00:00`;
   const dateTimeEnd = `${endDate} 16:00:00`;
 
@@ -83,18 +83,91 @@ export default defineEventHandler(async (event) => {
           
         FROM ovst ov
         JOIN kskdepartment s ON ov.main_dep = s.depcode
-        WHERE CONCAT(ov.vstdate, ' ', ov.vsttime) BETWEEN ${dateTimeStart} AND ${dateTimeEnd} AND s.depcode = '010'
+        WHERE CONCAT(ov.vstdate, ' ', ov.vsttime) BETWEEN ${dateTimeStart} AND ${dateTimeEnd} 
+        AND s.depcode = '010'
+        AND ov.vsttime BETWEEN '08:00:00' AND '16:00:00'
       ) tt
       GROUP BY departmentname 
       HAVING AVG(total_all_diff) IS NOT NULL
     `);
 
     if (!rawStats || rawStats.length === 0) {
-       return { stats: null, metadata: { startDate, endDate } };
+      return { stats: null, metadata: { startDate, endDate } };
     }
 
     const row = rawStats[0];
-    
+
+    // 2. Hourly Breakdown: รอซักประวัติ (Wait Screen)
+    const [hourlyScreen]: any[] = await hosxpDb.execute(sql`
+      SELECT 
+          visit_hour,
+          COUNT(vn) AS patient_count,
+          ROUND(AVG(NULLIF(wait_screen_seconds, 0)) / 60, 2) AS avg_wait_minutes,
+          ROUND(MAX(NULLIF(wait_screen_seconds, 0)) / 60, 2) AS max_wait_minutes
+      FROM (
+          SELECT 
+              ov.vn,
+              HOUR(ov.vsttime) AS visit_hour,
+              TIMESTAMPDIFF(SECOND, 
+                  COALESCE(
+                      (SELECT MIN(service_begin_datetime) FROM ovst_service_time WHERE vn = ov.vn AND ovst_service_time_type_code LIKE 'OPD-NEW-VISIT%'),
+                      CONCAT(ov.vstdate, ' ', ov.vsttime)
+                  ), 
+                  (SELECT MIN(service_begin_datetime) FROM ovst_service_time WHERE vn = ov.vn AND ovst_service_time_type_code = 'OPD-SCREEN')
+              ) AS wait_screen_seconds
+          FROM ovst ov
+          WHERE ov.vstdate BETWEEN ${startDate} AND ${endDate}
+          AND ov.main_dep = '010'
+          AND ov.vsttime BETWEEN '08:00:00' AND '16:59:59'
+      ) AS base_data
+      WHERE wait_screen_seconds >= 0 AND wait_screen_seconds < 28800
+      GROUP BY visit_hour
+      HAVING patient_count > 0
+      ORDER BY visit_hour
+    `);
+
+    // 3. Hourly Breakdown: รอตรวจ (Wait Doctor)
+    const [hourlyDoctor]: any[] = await hosxpDb.execute(sql`
+      SELECT 
+          visit_hour,
+          COUNT(vn) AS patient_count,
+          ROUND(AVG(NULLIF(wait_doctor_seconds, 0)) / 60, 2) AS avg_wait_minutes,
+          ROUND(MAX(NULLIF(wait_doctor_seconds, 0)) / 60, 2) AS max_wait_minutes
+      FROM (
+          SELECT 
+              ov.vn,
+              HOUR(ov.vsttime) AS visit_hour,
+              TIMESTAMPDIFF(SECOND, 
+                  COALESCE(
+                      (SELECT MIN(service_end_datetime) FROM ovst_service_time WHERE vn = ov.vn AND ovst_service_time_type_code LIKE 'OPD-SCREEN'),
+                      CONCAT(ov.vstdate, ' ', ov.vsttime)
+                  ), 
+                  (SELECT MIN(service_begin_datetime) FROM ovst_service_time WHERE vn = ov.vn AND ovst_service_time_type_code = 'OPD-DOCTOR')
+              ) AS wait_doctor_seconds
+          FROM ovst ov
+          WHERE ov.vstdate BETWEEN ${startDate} AND ${endDate}
+          AND ov.main_dep = '010'
+          AND ov.vsttime BETWEEN '08:00:00' AND '16:59:59'
+      ) AS base_data
+      WHERE wait_doctor_seconds >= 0 AND wait_doctor_seconds < 28800
+      GROUP BY visit_hour
+      HAVING patient_count > 0
+      ORDER BY visit_hour
+    `);
+
+    // 4. Visit Traffic for OPD 7 (010) specifically
+    const [traffic]: any[] = await hosxpDb.execute(sql`
+      SELECT 
+          HOUR(vsttime) as hour, 
+          COUNT(vn) as total 
+      FROM ovst 
+      WHERE vstdate BETWEEN ${startDate} AND ${endDate}
+      AND main_dep = '010'
+      AND vsttime BETWEEN '08:00:00' AND '16:59:59'
+      GROUP BY hour 
+      ORDER BY hour
+    `);
+
     // Map back to the Thai keys for the Frontend
     return {
       stats: {
@@ -106,7 +179,7 @@ export default defineEventHandler(async (event) => {
         'แพทย์ตรวจ': row.doctor_exam,
         'รอรับยา': row.wait_rx,
         'total_all': row.total_all_time,
-        
+
         m_wait_screen: row.m_wait_screen,
         m_screen: row.m_screen,
         m_wait_doc1: row.m_wait_doc1,
@@ -115,6 +188,9 @@ export default defineEventHandler(async (event) => {
         m_wait_rx: row.m_wait_rx,
         m_total_all: row.m_total_all
       },
+      hourly_screen: hourlyScreen,
+      hourly_doctor: hourlyDoctor,
+      traffic: traffic,
       metadata: { startDate, endDate }
     };
 
