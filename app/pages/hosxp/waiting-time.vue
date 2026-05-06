@@ -270,7 +270,7 @@ const maxTrafficTotal = computed(() => {
                       { val: stats.m_wait_rx, color: '#f59e0b', label: 'ยา/บริการ' }
                    ]" :key="i" :style="{ width: (step.val / stats.m_total_all * 100) + '%', backgroundColor: step.color }" :title="step.label" class="h-full border-r-[2px] border-ink last:border-r-0 hover:brightness-110 transition-all cursor-help relative group">
                       <div class="absolute inset-0 flex items-center justify-center bg-white/10 pointer-events-none">
-                         <span class="text-[10px] font-black text-ink bg-warm-white/90 px-1 shadow-sm">{{ Math.round(step.val / stats.m_total_all * 100) }}%</span>
+                         <span class="text-[10px] font-black text-ink px-1 shadow-sm">{{ Math.round(step.val / stats.m_total_all * 100) }}%</span>
                       </div>
                    </div>
                 </div>
