@@ -2,17 +2,11 @@
 @import 'tailwindcss';
 @import '@nuxt/ui';
 
-/* 
-  Theme System:
-  - Default: Neo-Brutalism (Existing)
-  - Modern: Clean, Soft, Modern (New)
-*/
-
 @theme {
   /* Common Fonts */
   --font-sans: 'Inter', 'IBM Plex Sans Thai', sans-serif;
   
-  /* --- Neo-Brutalism Variables (Existing) --- */
+  /* --- Neo-Brutalism Variables --- */
   --color-ink: #1a1a2e;
   --color-ink-soft: #2d2d44;
   --color-cream: #faf8f5;
@@ -21,18 +15,15 @@
   --color-teal: #2d9c96;
   --shadow-sharp: 8px 8px 0 var(--color-ink);
 
-  /* --- Modern Theme Variables (New) --- */
+  /* --- Modern Theme Variables (Mapped to CSS variables for easy component access) --- */
   --color-modern-bg-light: #f8fafc;
   --color-modern-bg-dark: #0f172a;
-  --color-modern-card-light: #ffffff;
-  --color-modern-card-dark: #1e293b;
   --color-modern-text-light: #1e293b;
   --color-modern-text-dark: #f1f5f9;
   --color-modern-primary: #3b82f6;
 }
 
 @layer base {
-  /* Default Neo-Brutalism Style */
   body {
     background-color: var(--color-cream);
     color: var(--color-ink);
@@ -40,7 +31,6 @@
     transition: background-color 0.3s ease, color 0.3s ease;
   }
 
-  /* Modern Theme Class */
   .theme-modern {
     background-color: var(--color-modern-bg-light);
     color: var(--color-modern-text-light);
@@ -51,36 +41,7 @@
     color: var(--color-modern-text-dark);
   }
 
-  /* Transition for all theme changes */
   * {
     transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
   }
-}
-
-/* Modern Theme Specific Styles */
-.theme-modern .card {
-  background-color: var(--color-modern-card-light);
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-}
-
-.dark .theme-modern .card {
-  background-color: var(--color-modern-card-dark);
-  border-color: #334155;
-  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-}
-
-.theme-modern .btn-primary {
-  background-color: var(--color-modern-primary);
-  border-radius: 8px;
-  color: white;
-  padding: 0.5rem 1rem;
-  font-weight: 500;
-}
-
-/* Neo-Brutalism Specific Styles (Keep existing but scope them or use as default) */
-body:not(.theme-modern) .browser-mockup {
-  border: 3px solid var(--color-ink);
-  box-shadow: var(--shadow-sharp);
 }

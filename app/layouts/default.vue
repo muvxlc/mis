@@ -170,17 +170,17 @@ watch(loggedIn, (val) => {
 
 <style scoped>
 .theme-modern {
-  --color-bg: theme('colors.slate.50');
-  --color-text: theme('colors.slate.900');
+  --color-bg: var(--color-modern-bg-light);
+  --color-text: var(--color-modern-text-light);
 }
 
 .theme-neo {
-  --color-bg: #faf8f5;
-  --color-text: #1a1a2e;
+  --color-bg: var(--color-cream);
+  --color-text: var(--color-ink);
 }
 
 .dark .theme-modern {
-  --color-bg: theme('colors.slate.950');
-  --color-text: theme('colors.slate.50');
+  --color-bg: var(--color-modern-bg-dark);
+  --color-text: var(--color-modern-text-dark);
 }
 </style>
