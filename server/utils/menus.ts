@@ -16,6 +16,9 @@ export const SYSTEM_MENUS: MenuItem[] = [
   { id: 'pdf-ocr', label: 'แปลงไฟล์ PDF (OCR)', icon: 'i-heroicons-document-arrow-down', path: '/miscellaneous/pdf-conversion', category: 'Miscellaneous' },
   { id: 'asr-meeting', label: 'ถอดเสียงประชุม (ASR)', icon: 'i-heroicons-microphone', path: '/miscellaneous/asr', category: 'Miscellaneous' },
   
+  // HOSXP
+  { id: 'hosxp-waiting-time', label: 'ระยะเวลารอคอย (Waiting Time)', icon: 'i-heroicons-clock', path: '/hosxp/waiting-time', category: 'HOSXP' },
+  
   // Settings (Admins only by default but can be tuned)
   { id: 'admin-users', label: 'จัดการบุคลากร / Team Access', icon: 'i-heroicons-users', path: '/admin/users', category: 'Settings' },
   { id: 'admin-roles', label: 'สิทธิ์การใช้งาน / Security', icon: 'i-heroicons-shield-check', path: '/admin/roles', category: 'Settings' },

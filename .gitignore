@@ -25,3 +25,8 @@ logs
 
 # Temporary Scripts
 update_role.js
+
+# Analysis & Documentation
+graphify-out/
+docs/
+debug_query.mjs
