@@ -3,45 +3,89 @@
 @import '@nuxt/ui';
 
 @theme {
-  /* Common Fonts */
   --font-sans: 'Inter', 'IBM Plex Sans Thai', sans-serif;
   
-  /* --- Neo-Brutalism Variables --- */
+  /* Palette */
   --color-ink: #1a1a2e;
   --color-ink-soft: #2d2d44;
   --color-cream: #faf8f5;
   --color-warm-white: #fffef9;
   --color-coral: #ff6b5b;
   --color-teal: #2d9c96;
-  --shadow-sharp: 8px 8px 0 var(--color-ink);
-
-  /* --- Modern Theme Variables (Mapped to CSS variables for easy component access) --- */
-  --color-modern-bg-light: #f8fafc;
-  --color-modern-bg-dark: #0f172a;
-  --color-modern-text-light: #1e293b;
-  --color-modern-text-dark: #f1f5f9;
-  --color-modern-primary: #3b82f6;
+  --color-gold: #8a6d19;
 }
 
 @layer base {
+  :root {
+    /* Semantic Variables - Default (Neo-Brutalism) */
+    --app-bg: var(--color-cream);
+    --app-text: var(--color-ink);
+    --app-border-width: 3px;
+    --app-border-color: var(--color-ink);
+    --app-radius: 2px;
+    --app-shadow: 8px 8px 0 var(--color-ink);
+    --app-card-bg: var(--color-warm-white);
+    --app-hero-bg: var(--color-ink);
+    --app-hero-text: var(--color-warm-white);
+  }
+
+  /* Modern Theme Overrides */
+  .theme-modern {
+    --app-bg: #f8fafc;
+    --app-text: #1e293b;
+    --app-border-width: 1px;
+    --app-border-color: #e2e8f0;
+    --app-radius: 12px;
+    --app-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --app-card-bg: #ffffff;
+    --app-hero-bg: #ffffff;
+    --app-hero-text: #1e293b;
+  }
+
+  .dark .theme-modern {
+    --app-bg: #0f172a;
+    --app-text: #f1f5f9;
+    --app-border-color: #334155;
+    --app-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    --app-card-bg: #1e293b;
+    --app-hero-bg: #1e293b;
+    --app-hero-text: #f1f5f9;
+  }
+
   body {
-    background-color: var(--color-cream);
-    color: var(--color-ink);
+    background-color: var(--app-bg);
+    color: var(--app-text);
     font-family: var(--font-sans);
     transition: background-color 0.3s ease, color 0.3s ease;
   }
 
-  .theme-modern {
-    background-color: var(--color-modern-bg-light);
-    color: var(--color-modern-text-light);
-  }
-
-  .dark .theme-modern {
-    background-color: var(--color-modern-bg-dark);
-    color: var(--color-modern-text-dark);
-  }
-
   * {
-    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, border-radius 0.3s ease;
+  }
+}
+
+@layer utilities {
+  /* Helper classes that use semantic variables */
+  .app-border {
+    border-width: var(--app-border-width);
+    border-style: solid;
+    border-color: var(--app-border-color);
+  }
+  
+  .app-shadow {
+    box-shadow: var(--app-shadow);
+  }
+  
+  .app-radius {
+    border-radius: var(--app-radius);
+  }
+
+  .app-card {
+    background-color: var(--app-card-bg);
+    border-width: var(--app-border-width);
+    border-style: solid;
+    border-color: var(--app-border-color);
+    box-shadow: var(--app-shadow);
+    border-radius: var(--app-radius);
   }
 }
