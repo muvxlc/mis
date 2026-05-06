@@ -1,125 +1,90 @@
 <script setup lang="ts">
-definePageMeta({
-  middleware: 'guest'
-});
-
-const { fetch: fetchSession } = useUserSession();
-const toast = useToast();
-
-const state = reactive({
-  identifier: '',
-  password: ''
-});
-
-const loading = ref(false);
-
-const onLogin = async () => {
-  loading.value = true;
-  try {
-    await $fetch('/api/auth/login', {
-      method: 'POST',
-      body: state
-    });
-    await fetchSession();
-    toast.add({ title: 'Welcome Back', description: 'Logged in successfully', color: 'success' });
-    navigateTo('/dashboard');
-  } catch (err: any) {
-    toast.add({ title: 'Authentication Failed', description: err.data?.message || 'Invalid credentials', color: 'error' });
-  } finally {
-    loading.value = false;
-  }
-};
+const { loggedIn } = useUserSession()
+const theme = useCookie('app-theme')
+const isModern = computed(() => theme.value === 'modern')
 </script>
 
 <template>
-  <div class="min-h-[80vh] flex items-center justify-center px-6">
-    <div class="w-full max-w-md">
-      <div class="bg-warm-white rounded-sm shadow-[8px_8px_0_var(--color-ink)] border-[3px] border-ink overflow-hidden border-t-[8px] border-t-teal">
-        <div class="p-10 space-y-8 relative z-10">
-          <div class="text-center space-y-4">
-            <h2 class="text-4xl font-display font-bold text-ink tracking-tight drop-shadow-sm">Welcome Back</h2>
-            <p class="text-ink text-sm font-bold bg-cream inline-block px-3 py-1 border-[2px] border-ink shadow-[2px_2px_0_var(--color-ink)] rounded-sm">Enter your credentials to access your dashboard</p>
+  <div :class="[
+    isModern ? 'bg-slate-50 dark:bg-slate-950 min-h-screen py-16 px-4' : 'bg-cream min-h-screen py-20 px-4'
+  ]">
+    <div :class="[
+      isModern ? 'max-w-md mx-auto bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 p-8' : 'max-w-md mx-auto bg-warm-white border-[3px] border-ink shadow-sharp p-8'
+    ]">
+      <div class="text-center mb-8">
+        <NuxtLink to="/" class="inline-flex items-center gap-2 mb-6">
+           <div :class="[isModern ? 'bg-blue-600 p-2 rounded-lg' : 'bg-ink p-1.5 border-[2px] border-ink rounded-sm']">
+            <UIcon name="i-heroicons-server-stack" class="w-6 h-6 text-white" />
           </div>
-
-          <UForm :state="state" class="space-y-6 font-bold text-ink [&_label]:text-ink [&_label]:font-bold [&_label]:text-sm [&_label]:tracking-wide [&_label]:mb-1.5" @submit="onLogin">
-            <UFormField label="Email Address or Citizen ID" name="identifier">
-              <UInput 
-                v-model="state.identifier" 
-                placeholder="name@company.com or 1100..." 
-                icon="i-heroicons-user"
-                size="lg"
-                class="w-full"
-                :ui="{ 
-                  base: 'shadow-[2px_2px_0_var(--color-ink)] border-[2px] border-ink rounded-sm bg-white font-bold text-ink placeholder:text-ink-soft'
-                }"
-              />
-            </UFormField>
-            
-            <UFormField label="Access Key (Password)" name="password">
-              <UInput 
-                v-model="state.password" 
-                type="password" 
-                placeholder="••••••••" 
-                icon="i-heroicons-lock-closed"
-                size="lg"
-                class="w-full"
-                :ui="{ 
-                  base: 'shadow-[2px_2px_0_var(--color-ink)] border-[2px] border-ink rounded-sm bg-white font-bold text-ink placeholder:text-ink-soft'
-                }"
-              />
-            </UFormField>
-
-            <div class="pt-4">
-              <UButton 
-                type="submit" 
-                block 
-                size="lg"
-                :loading="loading"
-                class="bg-teal hover:bg-teal-dark text-ink font-bold shadow-[4px_4px_0_var(--color-ink)] border-[3px] border-ink rounded-sm py-4 text-xs tracking-widest uppercase transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--color-ink)]"
-              >
-                Sign In to MIS
-              </UButton>
-            </div>
-
-            <div class="relative flex items-center justify-center pt-2">
-              <div class="w-full h-[3px] bg-ink"></div>
-              <span class="absolute bg-warm-white px-4 text-[11px] text-ink font-black tracking-widest uppercase border-[3px] border-ink shadow-[2px_2px_0_var(--color-ink)] py-1 rounded-sm">OR CONTINUE WITH</span>
-            </div>
-
-            <div class="pt-2 flex flex-col gap-4">
-              <UButton 
-                to="/api/auth/thaid"
-                external
-                block 
-                size="lg"
-                class="bg-coral hover:bg-coral-dark text-ink font-bold shadow-[4px_4px_0_var(--color-ink)] border-[3px] border-ink rounded-sm py-3.5 text-xs tracking-widest uppercase transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--color-ink)]"
-              >
-                <img src="/thaid.png" alt="ThaiD Logo" class="w-6 h-6 shrink-0 rounded-[4px] border border-ink shadow-[1px_1px_0_var(--color-ink)] object-cover bg-white" />
-                <span>Login with ThaiD</span>
-              </UButton>
-
-              <UButton 
-                to="/api/auth/authentik"
-                external
-                block 
-                size="lg"
-                class="bg-gold hover:bg-gold-light text-ink font-bold shadow-[4px_4px_0_var(--color-ink)] border-[3px] border-ink rounded-sm py-3.5 text-xs tracking-widest uppercase transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_var(--color-ink)]"
-              >
-                <!-- Tell the user to add an authentik.png icon if they want -->
-                <UIcon name="i-heroicons-shield-exclamation" class="w-6 h-6 shrink-0 text-ink" />
-                <span>Login with Authentik</span>
-              </UButton>
-            </div>
-
-            <div class="text-center pt-6 border-t-[3px] border-ink mt-2">
-              <p class="text-sm text-ink-soft font-bold">
-                New to MIS? 
-                <NuxtLink to="/register" class="text-ink bg-cream px-2 py-0.5 border-[2px] border-ink shadow-[2px_2px_0_var(--color-ink)] inline-block mt-2 hover:bg-gold transition-colors hover:-translate-y-px">Create an account</NuxtLink>
-              </p>
-            </div>
-          </UForm>
-        </div>
+          <span :class="[isModern ? 'text-2xl font-bold text-slate-900 dark:text-white' : 'text-2xl font-display font-bold text-ink']">M I S</span>
+        </NuxtLink>
+        <h1 :class="[isModern ? 'text-2xl font-bold text-slate-900 dark:text-white' : 'text-2xl font-display font-bold text-ink']">Welcome Back</h1>
+        <p :class="[isModern ? 'text-slate-500 dark:text-slate-400 mt-2' : 'text-ink-soft font-bold mt-2']">Log in to manage your services</p>
       </div>
+
+      <form class="space-y-6">
+        <div class="space-y-2">
+          <label :class="[isModern ? 'text-sm font-medium text-slate-700 dark:text-slate-300' : 'text-xs uppercase font-bold text-ink']">Email Address</label>
+          <input 
+            type="email" 
+            placeholder="name@company.com"
+            :class="[
+              isModern ? 'w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all' : 'w-full px-4 py-3 bg-warm-white border-[3px] border-ink focus:bg-cream outline-none font-bold'
+            ]"
+          />
+        </div>
+
+        <div class="space-y-2">
+          <label :class="[isModern ? 'text-sm font-medium text-slate-700 dark:text-slate-300' : 'text-xs uppercase font-bold text-ink']">Password</label>
+          <input 
+            type="password" 
+            placeholder="••••••••"
+            :class="[
+              isModern ? 'w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all' : 'w-full px-4 py-3 bg-warm-white border-[3px] border-ink focus:bg-cream outline-none font-bold'
+            ]"
+          />
+        </div>
+
+        <button 
+          type="submit"
+          :class="[
+            isModern ? 'w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg shadow-lg shadow-blue-500/30 transition-all active:scale-[0.98]' : 'w-full py-4 bg-teal hover:bg-teal-dark border-[3px] border-ink shadow-[4px_4px_0_var(--color-ink)] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] transition-all font-bold text-ink'
+          ]"
+        >
+          Sign In
+        </button>
+
+        <div class="relative py-4">
+          <div class="absolute inset-0 flex items-center"><div :class="isModern ? 'w-full border-t border-slate-200 dark:border-slate-800' : 'w-full border-t-[3px] border-ink/10'"></div></div>
+          <div class="relative flex justify-center text-xs uppercase">
+            <span :class="[isModern ? 'bg-white dark:bg-slate-900 px-2 text-slate-500' : 'bg-warm-white px-4 font-bold text-ink-soft']">Or continue with</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+           <UButton 
+             block 
+             label="ThaiID" 
+             icon="i-heroicons-identification" 
+             color="neutral" 
+             :variant="isModern ? 'outline' : 'solid'"
+             :class="isModern ? 'rounded-lg' : 'border-[3px] border-ink shadow-[4px_4px_0_var(--color-ink)] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] font-bold h-12 rounded-sm'"
+           />
+           <UButton 
+             block 
+             label="Authentik" 
+             icon="i-heroicons-shield-check" 
+             color="neutral" 
+             :variant="isModern ? 'outline' : 'solid'"
+             :class="isModern ? 'rounded-lg' : 'border-[3px] border-ink shadow-[4px_4px_0_var(--color-ink)] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] font-bold h-12 rounded-sm'"
+           />
+        </div>
+      </form>
+
+      <p :class="[isModern ? 'text-center mt-8 text-sm text-slate-500' : 'text-center mt-8 text-xs font-bold text-ink-soft']">
+        Don't have an account? 
+        <NuxtLink to="/register" :class="isModern ? 'text-blue-600 hover:underline' : 'text-coral underline ml-1'">Create one for free</NuxtLink>
+      </p>
     </div>
   </div>
 </template>

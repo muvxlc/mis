@@ -1,121 +1,86 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap');
-@import "tailwindcss";
-@import "@nuxt/ui";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap');
+@import 'tailwindcss';
+@import '@nuxt/ui';
+
+/* 
+  Theme System:
+  - Default: Neo-Brutalism (Existing)
+  - Modern: Clean, Soft, Modern (New)
+*/
 
 @theme {
-  /* Colors */
+  /* Common Fonts */
+  --font-sans: 'Inter', 'IBM Plex Sans Thai', sans-serif;
+  
+  /* --- Neo-Brutalism Variables (Existing) --- */
   --color-ink: #1a1a2e;
   --color-ink-soft: #2d2d44;
   --color-cream: #faf8f5;
   --color-warm-white: #fffef9;
   --color-coral: #ff6b5b;
-  --color-coral-dark: #e85a4a;
-  --color-coral-light: #ff8577;
-  --color-gold: #8a6d19;
-  --color-gold-light: #c9a227;
   --color-teal: #2d9c96;
-  --color-teal-dark: #247a75;
-  --color-sage: #8fae8f;
-  
-  /* Fonts */
-  --font-display: "IBM Plex Sans Thai", sans-serif;
-  --font-body: "IBM Plex Sans Thai", sans-serif;
-  --font-sans: "IBM Plex Sans Thai", sans-serif;
-  --font-serif: "IBM Plex Sans Thai", sans-serif;
-  
-  /* Shadows */
   --shadow-sharp: 8px 8px 0 var(--color-ink);
-  --shadow-soft: 0 20px 60px rgba(26,26,46,0.12);
-  --shadow-glow: 0 0 40px rgba(255,107,91,0.3);
-  --shadow-lifted: 0 30px 80px rgba(26,26,46,0.18);
+
+  /* --- Modern Theme Variables (New) --- */
+  --color-modern-bg-light: #f8fafc;
+  --color-modern-bg-dark: #0f172a;
+  --color-modern-card-light: #ffffff;
+  --color-modern-card-dark: #1e293b;
+  --color-modern-text-light: #1e293b;
+  --color-modern-text-dark: #f1f5f9;
+  --color-modern-primary: #3b82f6;
 }
 
 @layer base {
+  /* Default Neo-Brutalism Style */
   body {
     background-color: var(--color-cream);
     color: var(--color-ink);
-    font-size: clamp(1rem, 0.9rem + 0.5vw, 1.125rem);
-    line-height: 1.7;
-    font-family: var(--font-body);
-    font-weight: 400;
-    font-feature-settings: "kern" 1, "liga" 1;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -webkit-text-size-adjust: 100%;
-    margin: 0;
-    padding: 0;
-    box-sizing: inherit;
+    font-family: var(--font-sans);
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
-  
-  h1, h2, h3, h4, h5, h6, .font-display {
-    font-family: var(--font-display);
-    font-weight: 400;
-    line-height: 1.2;
-    margin: 0;
+
+  /* Modern Theme Class */
+  .theme-modern {
+    background-color: var(--color-modern-bg-light);
+    color: var(--color-modern-text-light);
   }
-  
-  ::selection {
-    background-color: var(--color-teal);
-    color: var(--color-warm-white);
+
+  .dark .theme-modern {
+    background-color: var(--color-modern-bg-dark);
+    color: var(--color-modern-text-dark);
+  }
+
+  /* Transition for all theme changes */
+  * {
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
   }
 }
 
-:root {
-  --ui-primary-50: #eaf5f4;
-  --ui-primary-100: #d5ebe9;
-  --ui-primary-200: #aaddda;
-  --ui-primary-300: #80ceca;
-  --ui-primary-400: #55beba;
-  --ui-primary-500: var(--color-teal);
-  --ui-primary-600: var(--color-teal-dark);
-  --ui-primary-700: #1d625d;
-  --ui-primary-800: #164a46;
-  --ui-primary-900: #0e322f;
-  --ui-primary-950: #071917;
-  
-  --ui-radius: 4px; /* radius-sm */
+/* Modern Theme Specific Styles */
+.theme-modern .card {
+  background-color: var(--color-modern-card-light);
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 }
 
-@layer utilities {
-  .border-thick {
-    border-width: 3px;
-    border-style: solid;
-    border-color: var(--color-ink);
-  }
-  
-  .border-thin {
-    border-width: 1px;
-    border-style: solid;
-    border-color: var(--color-ink-soft);
-  }
+.dark .theme-modern .card {
+  background-color: var(--color-modern-card-dark);
+  border-color: #334155;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
 }
 
-/* Browser Mockup Override */
-.browser-mockup {
-  border-radius: 8px; /* radius-md */
-  overflow: hidden;
-  background-color: var(--color-warm-white);
+.theme-modern .btn-primary {
+  background-color: var(--color-modern-primary);
+  border-radius: 8px;
+  color: white;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+}
+
+/* Neo-Brutalism Specific Styles (Keep existing but scope them or use as default) */
+body:not(.theme-modern) .browser-mockup {
   border: 3px solid var(--color-ink);
   box-shadow: var(--shadow-sharp);
-  transition: all 0.3s ease;
 }
-
-.browser-header {
-  background-color: var(--color-cream);
-  border-bottom: 3px solid var(--color-ink);
-  padding: 0.75rem 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.browser-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 100%;
-  border: 2px solid var(--color-ink);
-}
-.browser-dot-1 { background-color: var(--color-coral); }
-.browser-dot-2 { background-color: var(--color-gold); }
-.browser-dot-3 { background-color: var(--color-teal); }
-
