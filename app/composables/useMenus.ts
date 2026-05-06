@@ -32,8 +32,9 @@ export const useMenus = () => {
   const groupedMenus = computed(() => {
     const groups: Record<string, any[]> = {};
     menus.value.forEach(m => {
-      if (!groups[m.category]) groups[m.category] = [];
-      groups[m.category].push(m);
+      const cat = m.category || 'General';
+      if (!groups[cat]) groups[cat] = [];
+      groups[cat].push(m);
     });
     return groups;
   });

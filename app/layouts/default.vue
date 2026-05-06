@@ -16,7 +16,7 @@ const { loggedIn, user, clear } = useUserSession();
 const { groupedMenus, fetchMenus, loading: menusLoading } = useMenus();
 
 const logout = async () => {
-  await ('/api/auth/logout', { method: 'POST' });
+  await $fetch('/api/auth/logout', { method: 'POST' });
   await clear();
   navigateTo('/login');
 };
@@ -90,9 +90,9 @@ watch(loggedIn, (val) => {
                <div :class="[
                  isModern ? 'w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold text-xs uppercase border border-blue-200 dark:border-blue-800' : 'w-8 h-8 rounded-sm bg-teal/10 border-[3px] border-ink flex items-center justify-center text-ink font-bold text-xs uppercase shadow-[2px_2px_0_var(--color-ink)]'
                ]">
-                 {{ user?.name?.[0] || user?.email?.[0] || 'U' }}
+                 {{ (user as any)?.name?.[0] || (user as any)?.email?.[0] || 'U' }}
                </div>
-               <span :class="[isModern ? 'text-sm font-medium text-slate-700 dark:text-slate-200' : 'text-sm font-bold text-ink']">{{ user?.name || user?.email }}</span>
+               <span :class="[isModern ? 'text-sm font-medium text-slate-700 dark:text-slate-200' : 'text-sm font-bold text-ink']">{{ (user as any)?.name || (user as any)?.email }}</span>
             </div>
             <UButton @click="logout" color="neutral" variant="ghost" icon="i-heroicons-arrow-left-on-rectangle" :class="[isModern ? 'text-slate-500 hover:text-red-500' : 'text-ink-soft hover:text-coral font-bold rounded-sm']" label="LOGOUT" />
           </div>

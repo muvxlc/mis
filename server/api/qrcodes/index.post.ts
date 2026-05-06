@@ -4,7 +4,7 @@ import { nanoid } from 'nanoid';
 const createSchema = z.object({
   type: z.enum(['static', 'dynamic']),
   originalUrl: z.string().url(),
-  styleOptions: z.record(z.any()).optional(),
+  styleOptions: z.record(z.string(), z.any()).optional(),
 });
 
 export default defineEventHandler(async (event) => {
@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const [result] = await db.insert(tables.qrcodes).values({
-    userId: user.id,
+    userId: (user as any).id,
     type,
     originalUrl,
     shortCode,

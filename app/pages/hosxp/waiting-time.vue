@@ -220,7 +220,7 @@ const maxTrafficTotal = computed(() => {
           
           <div class="space-y-6">
              <div class="space-y-3">
-                <div class="flex h-12 :class=\"[isModern ? 'rounded-xl' : 'border-[3px] border-ink rounded-none shadow-[inset_2px_2px_4px_rgba(0,0,0,0.1)]', 'overflow-hidden transition-all']\">
+                <div :class="[isModern ? 'rounded-xl' : 'border-[3px] border-ink rounded-none shadow-[inset_2px_2px_4px_rgba(0,0,0,0.1)]', 'flex h-12 overflow-hidden transition-all']">
                    <div v-for="(step, i) in [
                       { val: stats.m_wait_screen, color: '#2dd4bf', label: 'รอซัก' },
                       { val: stats.m_screen, color: '#6366f1', label: 'ซักประวัติ' },

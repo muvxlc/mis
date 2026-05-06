@@ -5,7 +5,7 @@ export async function getAllowedMenus(role: string, db: any) {
 
   // Fetch permissions for this role
   const perms = await db.query.rolePermissions.findFirst({
-    where: (rp, { eq }) => eq(rp.role, role)
+    where: (rp: any, { eq }: any) => eq(rp.role, role)
   });
 
   if (!perms) {

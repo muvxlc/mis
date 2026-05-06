@@ -5,13 +5,13 @@ export default defineEventHandler(async (event) => {
   const session = await requireUserSession(event);
   const db = useDrizzle();
 
-  if (session.user.role === 'superadmin') {
+  if ((session.user as any).role === 'superadmin') {
      // Superadmin gets everything
      return { permissions: '*' };
   }
 
   const roleData = await db.query.rolePermissions.findFirst({
-    where: (rp, { eq }) => eq(rp.role, session.user.role)
+    where: (rp, { eq }) => eq(rp.role, (session.user as any).role)
   });
 
   return {

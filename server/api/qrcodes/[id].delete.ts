@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
   const [result] = await db.delete(tables.qrcodes).where(
     and(
       eq(tables.qrcodes.id, parseInt(id)),
-      eq(tables.qrcodes.userId, user.id)
+      eq(tables.qrcodes.userId, (user as any).id)
     )
   );
 

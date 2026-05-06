@@ -198,13 +198,13 @@ const onDelete = async (userId: number) => {
                     <UBadge 
                       size="sm"
                       :variant="isModern ? 'soft' : 'solid'" 
-                      :color="user.role === 'superadmin' ? 'rose' : (user.role === 'admin' ? 'blue' : 'neutral')" 
+                      :color="user.role === 'superadmin' ? 'error' : (user.role === 'admin' ? 'primary' : 'neutral')" 
                       :class="[
                         isModern ? 'rounded-full font-semibold px-2.5 py-0.5' : 'uppercase text-[10px] font-bold px-2 py-0.5 rounded-sm border-[2px] border-ink shadow-[2px_2px_0_var(--color-ink)]',
                         !isModern && (user.role === 'superadmin' ? 'bg-coral' : (user.role === 'admin' ? 'bg-teal' : 'bg-cream text-ink'))
                       ]"
                     >
-                      {{ user.role }}
+                      {{ (user as any).role }}
                     </UBadge>
                   </td>
                   <td class="px-6 py-5 text-right">

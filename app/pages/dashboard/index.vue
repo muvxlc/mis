@@ -142,7 +142,7 @@ const getPath = (data: any[], height: number) => {
                 />
                 <g v-for="(point, index) in dashboardStats.hourlyVisits" :key="index">
                    <circle 
-                      :cx="(index / (dashboardStats.hourlyVisits.length - 1)) * 1000" 
+                      :cx="((index as any) / ((dashboardStats.hourlyVisits as any[]).length - 1)) * 1000" 
                       :cy="300 - (point.total / Math.max(...(dashboardStats.hourlyVisits as any[]).map(d => d.total))) * 250" 
                       :r="isModern ? 4 : 6" 
                       :fill="isModern ? 'currentColor' : 'var(--color-gold)'"
@@ -178,7 +178,7 @@ const getPath = (data: any[], height: number) => {
              <div v-for="(item, idx) in dashboardStats?.visitDistribution" :key="item.pttype" class="relative group">
                 <div class="flex justify-between items-center mb-2">
                    <div class="flex items-center gap-3">
-                      <span v-if="!isModern" class="text-[10px] font-bold text-ink-soft bg-white border-[2px] border-ink w-6 h-6 flex items-center justify-center shadow-[1px_1px_0_var(--color-ink)]">{{ idx + 1 }}</span>
+                      <span v-if="!isModern" class="text-[10px] font-bold text-ink-soft bg-white border-[2px] border-ink w-6 h-6 flex items-center justify-center shadow-[1px_1px_0_var(--color-ink)]">{{ (idx as number) + 1 }}</span>
                       <span :class="[isModern ? 'text-slate-700 dark:text-slate-300' : 'text-ink', 'text-sm font-bold uppercase tracking-wide']">{{ item.pttype }}</span>
                    </div>
                    <div class="flex items-baseline gap-2">

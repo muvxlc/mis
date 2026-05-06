@@ -4,7 +4,7 @@ import { eq } from 'drizzle-orm';
 export default defineEventHandler(async (event) => {
   const db = useDrizzle();
   const session = await requireUserSession(event);
-  if (session.user.role !== 'admin' && session.user.role !== 'superadmin') {
+  if ((session.user as any).role !== 'admin' && (session.user as any).role !== 'superadmin') {
     throw createError({ statusCode: 403, message: 'Forbidden' });
   }
 
@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
   const existing = await db.select().from(rolePermissions).where(eq(rolePermissions.role, roleId));
   if (existing.length > 0) {
     await db.update(rolePermissions)
-      .set({ permissions: body.permissions, description: body.description || existing[0].description })
+      .set({ permissions: body.permissions, description: body.description || existing[0]?.description || '' })
       .where(eq(rolePermissions.role, roleId));
   } else {
     await db.insert(rolePermissions).values({

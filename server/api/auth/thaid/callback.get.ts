@@ -1,5 +1,5 @@
 import { eq } from 'drizzle-orm';
-import { tables } from '#imports'; // Auto-imported or explicitly imported from utils/drizzle
+import * as tables from '../../../database/schema';
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);
